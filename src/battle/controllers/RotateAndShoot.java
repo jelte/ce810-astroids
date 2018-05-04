@@ -1,11 +1,9 @@
 package battle.controllers;
 
 import asteroids.Action;
-import asteroids.Controller;
 import asteroids.GameState;
-import asteroids.Ship;
 import battle.BattleController;
-import battle.NeuroShip;
+import battle.Ship;
 import battle.SimpleBattle;
 
 /**
@@ -13,7 +11,7 @@ import battle.SimpleBattle;
  */
 public class RotateAndShoot implements BattleController {
 
-    NeuroShip ship;
+    Ship ship;
 
     Action action;
 
@@ -29,7 +27,7 @@ public class RotateAndShoot implements BattleController {
         return action;
     }
 
-    public void setVehicle(NeuroShip ship) {
+    public void setVehicle(Ship ship) {
         // just in case the ship is needed ...
         this.ship = ship;
     }

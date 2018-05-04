@@ -1,7 +1,5 @@
 package battle;
 
-import asteroids.Action;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
@@ -11,7 +9,7 @@ import java.awt.geom.AffineTransform;
 public abstract class DebugController implements RenderableBattleController {
 
     @Override
-    public void render(Graphics2D g, NeuroShip s) {
+    public void render(Graphics2D g, Ship s) {
         AffineTransform at = g.getTransform();
         g.translate(s.s.x, s.s.y);
         double rot = Math.atan2(s.d.y, s.d.x) + Math.PI / 2;

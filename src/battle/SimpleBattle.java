@@ -35,7 +35,7 @@ public class SimpleBattle {
     List<GameObject> objects;
     PlayerStats stats;
 
-    private NeuroShip s1;
+    private Ship s1;
     private BattleController p1;
     private BattleView view;
     private int currentTick;
@@ -62,6 +62,10 @@ public class SimpleBattle {
         this.p1 = player;
         reset();
 
+        makeAsteroids(10);
+        objects.add(s1);
+
+
         stats = new PlayerStats(0, 0);
 
         if (p1 instanceof KeyListener) {
@@ -83,18 +87,18 @@ public class SimpleBattle {
 
     public void reset() {
         objects.clear();
-        s1 = buildShip(100, 250, 0);
+        s1 = buildShip(width / 2, height / 2, 0);
         this.currentTick = 0;
 
         stats = new PlayerStats(0, 0);
     }
 
-    protected NeuroShip buildShip(int x, int y, int playerID) {
+    protected Ship buildShip(int x, int y, int playerID) {
         Vector2d position = new Vector2d(x, y, true);
         Vector2d speed = new Vector2d(true);
         Vector2d direction = new Vector2d(1, 0, true);
 
-        return new NeuroShip(position, speed, direction, playerID);
+        return new Ship(position, speed, direction, playerID);
     }
 
     public void update() {
@@ -113,7 +117,15 @@ public class SimpleBattle {
         // now apply them to the ships
         s1.update(a1);
 
-        checkCollision(s1);
+        // TODO This isn't going to work anymore
+//        checkCollision(s1);
+
+        for(int first = 0; first < objects.size() - 1; first++){
+            for(int second = first + 1; second < objects.size(); second++){
+                checkCollision(objects.get(first), objects.get(second));
+            }
+        }
+
 
         // and fire any missiles as necessary
         if (a1.shoot) fireMissile(s1.s, s1.d);
@@ -160,36 +172,24 @@ public class SimpleBattle {
         return objectClone;
     }
 
-
-    protected void checkCollision(GameObject actor) {
-        // check with all other game objects
-        // but use a hack to only consider interesting interactions
-        // e.g. asteroids do not collide with themselves
-        if (!actor.dead() &&
-                (actor instanceof BattleMissile
-                        || actor instanceof NeuroShip)) {
-            if (actor instanceof BattleMissile) {
-                // System.out.println("Missile: " + actor);
+    protected void checkCollision(GameObject first, GameObject second){
+        if(first == second) return;
+        if(first instanceof Asteroid && second instanceof Asteroid) return;
+        if(first instanceof BattleMissile && second instanceof BattleMissile) return;
+        if(overlap(first, second)) {
+//            System.out.println(first.getClass().getSimpleName() + " hit " + second.getClass().getSimpleName());
+            if(!(first instanceof Ship || second instanceof Ship)){
+                stats.nPoints += 10;
             }
-            for (GameObject ob : objects) {
-                if (overlap(actor, ob)) {
-                    // the object is hit, and the actor is also
-                    stats.nPoints += pointsPerKill;
-
-                    ob.hit();
-                    return;
-                }
-            }
+            first.hit();
+            second.hit();
         }
     }
 
-    private boolean overlap(GameObject actor, GameObject ob) {
-        if (actor.equals(ob)) {
-            return false;
-        }
+    private boolean overlap(GameObject first, GameObject second) {
         // otherwise do the default check
-        double dist = actor.s.dist(ob.s);
-        boolean ret = dist < (actor.r() + ob.r());
+        double dist = first.s.dist(second.s);
+        boolean ret = dist < (first.r() + second.r());
         return ret;
     }
 
@@ -203,7 +203,7 @@ public class SimpleBattle {
 
     protected void fireMissile(Vector2d s, Vector2d d) {
         // need all the usual missile firing code here
-        NeuroShip currentShip =  s1;
+        Ship currentShip = s1;
         if (stats.nMissiles < nMissiles) {
             Missile m = new Missile(s, new Vector2d(0, 0, true));
             m.v.add(d, releaseVelocity);
@@ -232,14 +232,16 @@ public class SimpleBattle {
             go.draw(g);
         }
 
-        s1.draw(g);
+        if(!s1.dead()) {
+            s1.draw(g);
+        }
         if (p1 instanceof RenderableBattleController) {
             RenderableBattleController rbc = (RenderableBattleController) p1;
             rbc.render(g, s1.copy());
         }
     }
 
-    public NeuroShip getShip() {
+    public Ship getShip() {
         return s1.copy();
     }
 
@@ -264,6 +266,7 @@ public class SimpleBattle {
     }
 
     public boolean isGameOver() {
+        if(s1.dead()) return true;
         if (getMissilesLeft() >= 0 && getMissilesLeft() >= 0) {
             //ensure that there are no bullets left in play
             if (objects.isEmpty()) {
@@ -294,6 +297,23 @@ public class SimpleBattle {
         public String toString() {
             return nMissiles + " : " + nPoints;
         }
+    }
+
+    private void makeAsteroids(int nAsteroids) {
+        Vector2d centre = new Vector2d(width / 2, height / 2, true);
+        // assumes that the game object list is currently empty
+        int target = objects.size() + nAsteroids;
+        while (objects.size() < target) {
+            // choose a random position and velocity
+            Vector2d location = new Vector2d(rand.nextDouble() * width,
+                    rand.nextDouble() * height, true);
+            Vector2d velocity = new Vector2d(rand.nextGaussian(), rand.nextGaussian(), true);
+            if (location.dist(centre) > safeRadius && velocity.mag() > 0.5) {
+                Asteroid a = new Asteroid(location, velocity, 0);
+                objects.add(a);
+            }
+        }
+
     }
 
 }

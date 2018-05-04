@@ -2,7 +2,6 @@ package battle;
 
 import asteroids.Action;
 import asteroids.GameObject;
-import asteroids.GameState;
 import asteroids.Missile;
 import math.Vector2d;
 
@@ -11,7 +10,7 @@ import java.awt.geom.AffineTransform;
 
 import static asteroids.Constants.*;
 
-public class NeuroShip extends GameObject {
+public class Ship extends GameObject {
 
     // define the shape of the ship
     static int[] xp = {-2, 0, 2, 0};
@@ -45,14 +44,14 @@ public class NeuroShip extends GameObject {
     int playerID;
 
 
-    public NeuroShip(Vector2d s, Vector2d v, Vector2d d, int playerID) {
+    public Ship(Vector2d s, Vector2d v, Vector2d d, int playerID) {
         super(new Vector2d(s, true), new Vector2d(v, true));
         this.d = new Vector2d(d, true);
         this.playerID = playerID;
     }
 
-    public NeuroShip copy() {
-        NeuroShip ship = new NeuroShip(s, v, d, playerID);
+    public Ship copy() {
+        Ship ship = new Ship(s, v, d, playerID);
         ship.releaseVelocity = releaseVelocity;
         return ship;
     }
@@ -87,7 +86,7 @@ public class NeuroShip extends GameObject {
         return v;
     }
 
-    public NeuroShip update(Action action) {
+    public Ship update(Action action) {
 
         // what if this is always on?
 
@@ -143,7 +142,7 @@ public class NeuroShip extends GameObject {
 
     @Override
     public void update() {
-        throw new IllegalArgumentException("You shouldn't be calling this...");
+
     }
 
     public void draw(Graphics2D g) {
@@ -164,7 +163,7 @@ public class NeuroShip extends GameObject {
 
     public void hit() {
         // super.hit();
-        // System.out.println("Ship destroyed");
+//         System.out.println("Ship destroyed");
         dead = true;
         // sounds.play(sounds.bangLarge);
     }

@@ -1,7 +1,6 @@
 package battle.controllers.mmmcts;
 
 import asteroids.Action;
-import battle.NeuroShip;
 import battle.SimpleBattle;
 import battle.controllers.mmmcts.tools.ElapsedCpuTimer;
 import battle.controllers.mmmcts.tools.Utils;
