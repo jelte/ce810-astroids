@@ -8,6 +8,6 @@ import asteroids.Action;
 
 public interface BattleController {
 
-    Action getAction(SimpleBattle gameStateCopy, int playerId);
+    Action getAction(SimpleBattle gameStateCopy);
 
 }

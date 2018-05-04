@@ -7,20 +7,15 @@ import static asteroids.Constants.*;
 
 public class Game {
 
-    // todo: Implement and Test Saucer
-    // todo: a high-score facility
-    // todo: experiment with steering mechanisms
-    // todo: make a string centering mechanism
 
-    View view;
-    GameState gameState;
-    JEasyFrame frame;
-    Controller controller;
+    private View view;
+    private GameState gameState;
+    private JEasyFrame frame;
+    private Controller controller;
 
     static boolean copyTest = false;
 
     public static void main(String[] args) {
-        System.out.println(font);
         boolean visible = true;
         int nTicks = 10000;
         Game game = new Game(visible);

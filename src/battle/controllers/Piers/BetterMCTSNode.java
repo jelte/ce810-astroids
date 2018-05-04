@@ -20,7 +20,6 @@ public class BetterMCTSNode {
     private boolean ourNode;
 
     private int currentDepth;
-    private int playerID;
 
     private double totalValue = 0;
     private int numberOfVisits = 1;
@@ -28,10 +27,9 @@ public class BetterMCTSNode {
     private double explorationConstant;
     private PiersMCTS mcts;
 
-    public BetterMCTSNode(double explorationConstant, int playerID, PiersMCTS mcts) {
+    public BetterMCTSNode(double explorationConstant, PiersMCTS mcts) {
         this.explorationConstant = explorationConstant;
         currentDepth = 0;
-        this.playerID = playerID;
         ourNode = true;
         children = new BetterMCTSNode[allActions.length];
         this.mcts = mcts;
@@ -43,7 +41,6 @@ public class BetterMCTSNode {
         this.parent = parent;
         this.children = new BetterMCTSNode[allActions.length];
         this.currentDepth = parent.currentDepth + 1;
-        this.playerID = parent.playerID;
         this.ourNode = parent.ourNode;
         this.mcts = parent.mcts;
     }
@@ -67,7 +64,7 @@ public class BetterMCTSNode {
             if (current.fullyExpanded()) {
                 current = current.selectBestChild();
                 for (int i = 0; i < mcts.ACTIONS_PER_MACRO; i++) {
-                    state.update(current.ourMoveToThisState, allActions[random.nextInt(allActions.length)]);
+                    state.update(current.ourMoveToThisState);
                 }
             } else {
                 return current.expand(state);
@@ -89,7 +86,7 @@ public class BetterMCTSNode {
         }
         children[childToExpand] = new BetterMCTSNode(this, allActions[childToExpand]);
         for (int i = 0; i < mcts.ACTIONS_PER_MACRO; i++) {
-            state.update(allActions[childToExpand], allActions[random.nextInt(allActions.length)]);
+            state.update(allActions[childToExpand]);
         }
         numberOfChildrenExpanded++;
         return children[childToExpand];
@@ -135,14 +132,13 @@ public class BetterMCTSNode {
             Action first = allActions[random.nextInt(allActions.length)];
             Action second = allActions[random.nextInt(allActions.length)];
             for (int i = 0; i < mcts.ACTIONS_PER_MACRO; i++) {
-                state.update(first, second);
+                state.update(first);
             }
             currentRolloutDepth++;
         }
-        int missilesUsed = 100 - state.getMissilesLeft(playerID);
-        int ourPoints = state.getPoints(playerID);
-        int enemyPoints = state.getPoints(playerID == 0 ? 1 : 0);
-        return (ourPoints - (missilesUsed * 5) - (enemyPoints * 1.5));
+        int missilesUsed = 100 - state.getMissilesLeft();
+        int ourPoints = state.getPoints();
+        return (ourPoints - (missilesUsed * 5));
     }
 
     public Action getBestAction() {

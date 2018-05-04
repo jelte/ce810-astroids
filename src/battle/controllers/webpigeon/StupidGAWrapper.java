@@ -20,7 +20,7 @@ public class StupidGAWrapper implements BattleController {
     }
 
     @Override
-    public Action getAction(SimpleBattle gameStateCopy, int playerId) {
+    public Action getAction(SimpleBattle gameStateCopy) {
         return getMove();
     }
 }

@@ -10,29 +10,23 @@ import battle.SimpleBattle;
 public class PiersMCTS implements BattleController {
 
     protected static int ACTIONS_PER_MACRO = 15;
-    protected static final int ACTIONS_PER_MACRO_ENEMY_CLOSE = 3;
-    protected static final int ACTIONS_PER_MACRO_ENEMY_FAR = 15;
-    protected static final double DISTANCE_THRESHOLD = 100;
 
     private MacroAction currentBestAction = new MacroAction(new Action(1, 0, false));
     private BetterMCTSNode root;
 
     public PiersMCTS() {
-        MCTSNode.setAllActions();
         BetterMCTSNode.setAllActions();
     }
 
     @Override
-    public Action getAction(SimpleBattle gameStateCopy, int playerId) {
+    public Action getAction(SimpleBattle gameStateCopy) {
         GameTimer timer = new GameTimer();
         timer.setTimeBudgetMilliseconds(25);
         Action action = currentBestAction.getAction();
 
-        double distance = gameStateCopy.getShip(0).s.dist(gameStateCopy.getShip(1).s);
-        ACTIONS_PER_MACRO = (distance > DISTANCE_THRESHOLD) ? ACTIONS_PER_MACRO_ENEMY_FAR : ACTIONS_PER_MACRO_ENEMY_CLOSE;
 
-        if (root == null) root = new BetterMCTSNode(2.0, playerId, this);
-        if (currentBestAction.getTimesUsed() >= ACTIONS_PER_MACRO) root = new BetterMCTSNode(2.0, playerId, this);
+        if (root == null) root = new BetterMCTSNode(2.0,  this);
+        if (currentBestAction.getTimesUsed() >= ACTIONS_PER_MACRO) root = new BetterMCTSNode(2.0, this);
 
         int i = 0;
         while (timer.remainingTimePercent() > 10) {

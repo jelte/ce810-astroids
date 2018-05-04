@@ -23,7 +23,6 @@ public class SingleMCTSPlayer
      */
     public Random m_rnd;
 
-    public int playerID;
 
     /**
      * Creates the MCTS player with a sampleRandom generator object.
@@ -39,19 +38,17 @@ public class SingleMCTSPlayer
      * Inits the tree with the new observation state in the root.
      * @param a_gameState current state of the game.
      */
-    public void init(SimpleBattle a_gameState, int playerId)
+    public void init(SimpleBattle a_gameState)
     {
         //Set the game observation to a newly root node.
         m_root = new SingleTreeNode(m_rnd);
         m_root.state = a_gameState;
-
-        playerID = playerId;
     }
 
     public int run(ElapsedCpuTimer elapsedTimer)
     {
         //Do the search within the available time.
-        m_root.mctsSearch(elapsedTimer, playerID);
+        m_root.mctsSearch(elapsedTimer);
 
         //Determine the best action to take and return it.
         int action = m_root.mostVisitedAction();

@@ -46,7 +46,7 @@ public class SingleTreeNode
     }
 
 
-    public void mctsSearch(ElapsedCpuTimer elapsedTimer, int playerID) {
+    public void mctsSearch(ElapsedCpuTimer elapsedTimer) {
 
         //playerId = playerID;
         double avgTimeTaken = 0;
@@ -58,8 +58,8 @@ public class SingleTreeNode
         int remainingLimit = 5;
         while(remaining > 2*avgTimeTaken && remaining > remainingLimit){
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
-            SingleTreeNode selected = treePolicy(playerID);
-            double delta = selected.rollOut(playerID);
+            SingleTreeNode selected = treePolicy();
+            double delta = selected.rollOut();
             backUp(selected, delta);
 
             numIters++;
@@ -72,14 +72,14 @@ public class SingleTreeNode
         //System.out.println("-- " + numIters + " -- ( " + avgTimeTaken + ")");
     }
 
-    public SingleTreeNode treePolicy(int playerId) {
+    public SingleTreeNode treePolicy() {
 
         SingleTreeNode cur = this;
 
         while (!cur.state.isGameOver() && cur.m_depth < MMMCTS.ROLLOUT_DEPTH)
         {
             if (cur.notFullyExpanded()) {
-                return cur.expand(playerId);
+                return cur.expand();
 
             } else {
                 SingleTreeNode next = cur.uct();
@@ -92,7 +92,7 @@ public class SingleTreeNode
     }
 
 
-    public SingleTreeNode expand(int playerId) {
+    public SingleTreeNode expand() {
 
         int bestAction = 0;
         double bestValue = -1;
@@ -106,11 +106,8 @@ public class SingleTreeNode
         }
 
         SimpleBattle nextState = state.clone();
-        if(playerId == 0) {
-            nextState.update(MMMCTS.actions.get(bestAction).buildAction(), DEFAULTACTION);
-        } else {
-            nextState.update(DEFAULTACTION, MMMCTS.actions.get(bestAction).buildAction());
-        }
+            nextState.update(MMMCTS.actions.get(bestAction).buildAction());
+
 
         SingleTreeNode tn = new SingleTreeNode(nextState, this, this.m_rnd);
         children[bestAction] = tn;
@@ -188,7 +185,7 @@ public class SingleTreeNode
     }
 
 
-    public double rollOut(int playerId)
+    public double rollOut()
     {
         SimpleBattle rollerState = state.clone();
         int thisDepth = this.m_depth;
@@ -196,15 +193,13 @@ public class SingleTreeNode
         while (!finishRollout(rollerState,thisDepth)) {
 
             int action = m_rnd.nextInt(MMMCTS.NUM_ACTIONS);
-            if(playerId == 0) {
-                rollerState.update(MMMCTS.actions.get(action).buildAction(), DEFAULTACTION);
-            } else {
-                rollerState.update(DEFAULTACTION, MMMCTS.actions.get(action).buildAction());
-            }
+
+                rollerState.update(MMMCTS.actions.get(action).buildAction());
+
             thisDepth++;
         }
 
-        double delta = value(rollerState, playerId);
+        double delta = value(rollerState);
 
         if(delta < bounds[0])
             bounds[0] = delta;
@@ -221,40 +216,26 @@ public class SingleTreeNode
     public static int GRAVITATE_DISTANCE = 40;
     public static boolean GRAVITATE = false;
 
-    public double value(SimpleBattle a_gameState, int playerId) {
+    public double value(SimpleBattle a_gameState) {
 
         //double score = OGState.getPoints(playerId);
         double score = 5000;
 
-        NeuroShip s1,s2;
-        s1 = a_gameState.getShip(playerId);
-        s2 = a_gameState.getShip(1-playerId);
-
-        if(OGState.getPoints(1-playerId) < a_gameState.getPoints(1-playerId))
+        if(OGState.getPoints() < a_gameState.getPoints())
         {
             score += HUGE_NEGATIVE;
         }
 
-        if(a_gameState.getPoints(playerId) > OGState.getPoints(playerId)) {
+        if(a_gameState.getPoints() > OGState.getPoints()) {
             //score += HUGE_POSITIVE;
             score += SCORE_BONUS;
         }
 
-        int mleft =  Math.abs(a_gameState.getMissilesLeft(playerId));
-        int mused = Math.abs(OGState.getMissilesLeft(playerId)) - (mleft);
-        double dist = s1.s.dist(s2.s);
+        int mleft =  Math.abs(a_gameState.getMissilesLeft());
 
         if(mleft > 0) {
             //score -= 2000 * mused;
             score += MISSILES_LEFT_MOD * mleft;
-
-            //int gravitateTowards = 100;
-            if(GRAVITATE)
-                score += DISTANCE_MOD * -Math.abs(GRAVITATE_DISTANCE - dist);
-            else
-                score += -dist * DISTANCE_MOD;
-        } else {
-            score += dist * DISTANCE_MOD;
         }
 
         //double alpha = 180 + Math.atan2((s1.s.y - s2.s.y), (s1.s.x - s2.s.x));

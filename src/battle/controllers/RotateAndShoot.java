@@ -35,7 +35,7 @@ public class RotateAndShoot implements BattleController {
     }
 
     @Override
-    public Action getAction(SimpleBattle gameStateCopy, int playerId) {
+    public Action getAction(SimpleBattle gameStateCopy) {
         return new Action(0, 1, true);
     }
 }

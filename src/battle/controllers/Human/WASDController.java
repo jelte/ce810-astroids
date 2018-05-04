@@ -20,7 +20,7 @@ public class WASDController implements BattleController, KeyListener {
     Action currentAction = NOOP;
 
     @Override
-    public Action getAction(SimpleBattle gameStateCopy, int playerId) {
+    public Action getAction(SimpleBattle gameStateCopy) {
         if (currentAction == null) {
             return NOOP;
         }

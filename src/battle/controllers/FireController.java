@@ -9,7 +9,7 @@ import battle.SimpleBattle;
  */
 public class FireController implements BattleController {
     @Override
-    public Action getAction(SimpleBattle gameStateCopy, int playerId) {
+    public Action getAction(SimpleBattle gameStateCopy) {
         return new Action(0,0,true);
     }
 }

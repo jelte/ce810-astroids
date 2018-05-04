@@ -50,12 +50,12 @@ public class MMMCTS implements BattleController {
         mctsPlayer = new SingleMCTSPlayer(new Random());
     }
 
-    public Action getAction(SimpleBattle gameStateCopy, int playerId) {
+    public Action getAction(SimpleBattle gameStateCopy) {
         //ArrayList<Observation> obs[] = stateObs.getFromAvatarSpritesPositions();
         //ArrayList<Observation> grid[][] = stateObs.getObservationGrid();
 
         //Set the state observation object as the new root of the tree.
-        mctsPlayer.init(gameStateCopy, playerId);
+        mctsPlayer.init(gameStateCopy);
 
         ElapsedCpuTimer timer = new ElapsedCpuTimer();
         timer.setMaxTimeMillis(TIMETOTHINK);

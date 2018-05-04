@@ -11,7 +11,7 @@ import java.awt.geom.AffineTransform;
  */
 public class FireForwardController extends DebugController {
     @Override
-    public Action getAction(SimpleBattle gameStateCopy, int playerId) {
+    public Action getAction(SimpleBattle gameStateCopy) {
         return new Action(1,0,true);
     }
 

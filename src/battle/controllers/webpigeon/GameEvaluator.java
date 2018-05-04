@@ -24,17 +24,15 @@ public class GameEvaluator implements Eval2 {
         currBattle.reset();
 
         StupidGAWrapper controller1 = new StupidGAWrapper(a);
-        StupidGAWrapper controller2 = new StupidGAWrapper(b);
 
         int tick = 0;
         while(!currBattle.isGameOver()) {
             Action action1 = controller1.getMove();
-            Action action2 = controller2.getMove();
 
-            currBattle.update(action1, action2);
+            currBattle.update(action1);
         }
 
-        return currBattle.getPoints(0) - currBattle.getPoints(1);
+        return currBattle.getPoints();
     }
 
 }

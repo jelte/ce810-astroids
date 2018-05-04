@@ -56,7 +56,7 @@ public class PiersController implements BattleController {
     }
 
     @Override
-    public Action getAction(SimpleBattle gameStateCopy, int playerId) {
+    public Action getAction(SimpleBattle gameStateCopy) {
 
         double[] avoidanceTable = new double[5];
         double[] shootingTable = new double[3];

@@ -19,7 +19,7 @@ public class Naz_AI implements BattleController {
 
 
 
-    public Action getAction(SimpleBattle game, int playerId ) {
+    public Action getAction(SimpleBattle game ) {
         Action action = new Action();
         // Work out what we want to do
         action.shoot =true; //don't forget to set to true  ///The ship will always shoot because it's free and it's simple enough
