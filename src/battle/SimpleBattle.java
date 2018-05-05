@@ -1,6 +1,5 @@
 package battle;
 
-import asteroids.*;
 import math.Vector2d;
 import utilities.JEasyFrame;
 
@@ -10,7 +9,7 @@ import java.awt.*;
 import java.util.List;
 
 
-import static asteroids.Constants.*;
+import static battle.Constants.*;
 
 /**
  * Created by simon lucas on 10/06/15.
@@ -205,7 +204,7 @@ public class SimpleBattle {
         // need all the usual missile firing code here
         Ship currentShip = s1;
         if (stats.nMissiles < nMissiles) {
-            Missile m = new Missile(s, new Vector2d(0, 0, true));
+            BattleMissile m = new BattleMissile(s, new Vector2d(0, 0, true), 0);
             m.v.add(d, releaseVelocity);
             // make it clear the ship
             m.s.add(m.v, (currentShip.r() + missileRadius) * 1.5 / m.v.mag());

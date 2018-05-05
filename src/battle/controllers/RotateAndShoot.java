@@ -1,7 +1,6 @@
 package battle.controllers;
 
-import asteroids.Action;
-import asteroids.GameState;
+import battle.Action;
 import battle.BattleController;
 import battle.Ship;
 import battle.SimpleBattle;
@@ -19,7 +18,7 @@ public class RotateAndShoot implements BattleController {
         action = new Action();
     }
 
-    public Action action(GameState game) {
+    public Action action() {
         // action.thrust = 2.0;
         action.shoot = true;
         action.turn = 1;

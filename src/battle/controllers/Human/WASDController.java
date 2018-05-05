@@ -1,6 +1,6 @@
 package battle.controllers.Human;
 
-import asteroids.Action;
+import battle.Action;
 import battle.BattleController;
 import battle.SimpleBattle;
 

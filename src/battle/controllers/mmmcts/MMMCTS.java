@@ -1,6 +1,6 @@
 package battle.controllers.mmmcts;
 
-import asteroids.Action;
+import battle.Action;
 import battle.BattleController;
 import battle.SimpleBattle;
 import battle.controllers.mmmcts.tools.ElapsedCpuTimer;

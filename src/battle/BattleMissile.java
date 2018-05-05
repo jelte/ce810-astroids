@@ -1,11 +1,10 @@
 package battle;
 
-import asteroids.GameObject;
 import math.Vector2d;
 
 import java.awt.*;
 
-import static asteroids.Constants.*;
+import static battle.Constants.*;
 
 public class BattleMissile extends GameObject {
 

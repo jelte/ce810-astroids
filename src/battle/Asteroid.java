@@ -1,13 +1,12 @@
 package battle;
 
-import asteroids.GameObject;
 import math.Vector2d;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-import static asteroids.Constants.radii;
-import static asteroids.Constants.rand;
+import static battle.Constants.radii;
+import static battle.Constants.rand;
 
 public class Asteroid extends GameObject {
     static int nPoints = 16;

@@ -1,16 +1,11 @@
 package battle;
 
-import asteroids.GameObject;
-import asteroids.GameState;
-import asteroids.Ship;
-import math.Vector2d;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 
-import static asteroids.Constants.*;
+import static battle.Constants.*;
 import static java.awt.Color.black;
 
 

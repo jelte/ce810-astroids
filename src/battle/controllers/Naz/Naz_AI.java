@@ -1,12 +1,8 @@
 package battle.controllers.Naz;
 
-import asteroids.Action;
-import asteroids.GameState;
+import battle.Action;
 import battle.BattleController;
 import battle.SimpleBattle;
-
-import java.util.FormatFlagsConversionMismatchException;
-import java.util.Random;
 
 /**
  * Created by avkokk on 11/06/2015.

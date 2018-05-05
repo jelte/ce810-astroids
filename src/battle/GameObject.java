@@ -1,4 +1,4 @@
-package asteroids;
+package battle;
 
 import math.Vector2d;
 

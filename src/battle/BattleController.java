@@ -1,7 +1,5 @@
 package battle;
 
-import asteroids.Action;
-
 /**
  * Created by simon lucas on 10/06/15.
  */

@@ -1,6 +1,6 @@
 package battle.controllers.webpigeon;
 
-import asteroids.Action;
+import battle.Action;
 import battle.SimpleBattle;
 import ga.Eval2;
 

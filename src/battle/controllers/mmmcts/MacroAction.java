@@ -1,6 +1,6 @@
 package battle.controllers.mmmcts;
 
-import asteroids.Action;
+import battle.Action;
 
 /**
  * PTSP-Competition

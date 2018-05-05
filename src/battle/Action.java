@@ -1,4 +1,4 @@
-package asteroids;
+package battle;
 
 /**
  * Created by Simon M. Lucas

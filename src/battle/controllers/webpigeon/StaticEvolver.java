@@ -1,13 +1,9 @@
 package battle.controllers.webpigeon;
 
 
-import asteroids.Action;
-import battle.DebugController;
 import battle.SimpleBattle;
-import battle.controllers.EmptyController;
 import ga.SimpleRandomHillClimberEngine;
 
-import java.awt.*;
 import java.util.Arrays;
 
 /**
