@@ -28,10 +28,11 @@ public interface Constants {
     int missileRadius = 2;
     int missileTTL = 60;
 
-    int N_PARAMS = 4;
+    int N_PARAMS = 5;
     int N_TICKS = 0;
     int N_MISSILES = 1;
     int BULLET_INITIAL_VELOCITY = 2;
     int BULLET_TIME_TO_LIVE = 3;
+    int N_ASTEROIDS = 4;
 
 }

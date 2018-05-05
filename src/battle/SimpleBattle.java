@@ -26,6 +26,7 @@ public class SimpleBattle {
     private int tickLimit = 1000;
     private int bulletInitialVelocity = 5;
     private int bulletTimeToLive = 60;
+    private int nAsteroids = 10;
     private boolean visible = true;
     private List<GameObject> objects;
     private PlayerStats stats;
@@ -67,6 +68,9 @@ public class SimpleBattle {
         if(params[BULLET_TIME_TO_LIVE] != -1){
             bulletTimeToLive = params[BULLET_TIME_TO_LIVE];
         }
+        if(params[N_ASTEROIDS] != -1){
+            nAsteroids = params[N_ASTEROIDS];
+        }
     }
 
     public int getTicks() {
@@ -77,7 +81,7 @@ public class SimpleBattle {
         this.player = player;
         reset();
 
-        makeAsteroids(10);
+        makeAsteroids(nAsteroids);
         objects.add(ship);
 
 
@@ -210,12 +214,12 @@ public class SimpleBattle {
         }
     }
 
-    private void fireMissile(Vector2d s, Vector2d d) {
+    private void fireMissile(Vector2d location, Vector2d direction) {
         // need all the usual missile firing code here
         Ship currentShip = ship;
         if (stats.nMissiles < nMissiles) {
-            BattleMissile missile = new BattleMissile(s, new Vector2d(0, 0, true), bulletTimeToLive);
-            missile.getVelocity().add(d, bulletInitialVelocity);
+            BattleMissile missile = new BattleMissile(location, new Vector2d(0, 0, true), bulletTimeToLive);
+            missile.getVelocity().add(direction, bulletInitialVelocity);
             // make it clear the ship
             missile.getVelocity().add(missile.getVelocity(), (currentShip.radius() + missileRadius) * 1.5 / missile.getVelocity().mag());
             objects.add(missile);
@@ -238,8 +242,8 @@ public class SimpleBattle {
         g.fillRect(0, 0, size.width, size.height);
 
         synchronized (_objects) {
-            for (GameObject go : objects) {
-                go.draw(g);
+            for (GameObject gameObject : objects) {
+                gameObject.draw(g);
             }
         }
 
@@ -268,11 +272,11 @@ public class SimpleBattle {
         return stats.nMissiles - nMissiles;
     }
 
-    private void wrap(GameObject ob) {
+    private void wrap(GameObject gameObject) {
         // only wrap objects which are wrappable
-        if (ob.wrappable()) {
-            ob.getLocation().x = (ob.getLocation().x + width) % width;
-            ob.getLocation().y = (ob.getLocation().y + height) % height;
+        if (gameObject.wrappable()) {
+            gameObject.getLocation().x = (gameObject.getLocation().x + width) % width;
+            gameObject.getLocation().y = (gameObject.getLocation().y + height) % height;
         }
     }
 

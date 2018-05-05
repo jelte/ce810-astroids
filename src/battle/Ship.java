@@ -24,7 +24,6 @@ public class Ship extends GameObject {
     // this is the friction that makes the ship slow down over time
     static double loss = 0.99;
     private static double gravity = 0.0;
-    // position and velocity
     public Vector2d d;
     double minVelocity = 2;
     private double releaseVelocity = 0;
