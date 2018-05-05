@@ -14,7 +14,7 @@ public interface Constants {
     int width = 640;
     int height = 480;
     Dimension size = new Dimension(width, height);
-    int safeRadius = height/20;
+    int safeRadius = height / 20;
     Color bg = Color.black;
     Font font = new Font("Courier", Font.PLAIN, 20);
 

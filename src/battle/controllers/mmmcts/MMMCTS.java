@@ -31,17 +31,16 @@ public class MMMCTS implements BattleController {
      */
     private SingleMCTSPlayer mctsPlayer;
 
-    public MMMCTS()
-    {
+    public MMMCTS() {
         actions = new ArrayList<MacroAction>();
         //Get the actions in a static array.
-        for(int i = MacroAction.ACTION_NO_FRONT; i <= MacroAction.ACTION_THR_RIGHT_SHOOT; ++i)  //6 actions
+        for (int i = MacroAction.ACTION_NO_FRONT; i <= MacroAction.ACTION_THR_RIGHT_SHOOT; ++i)  //6 actions
         //for(int i = Controller.ACTION_THR_FRONT; i <= Controller.ACTION_THR_RIGHT; ++i)   //Only 3 actions
         {
             boolean t = MacroAction.getThrust(i);
             int s = MacroAction.getTurning(i);
             boolean sh = MacroAction.getShoot(i);
-            actions.add(new MacroAction(t,s,sh,MACRO_ACTION_LENGTH));
+            actions.add(new MacroAction(t, s, sh, MACRO_ACTION_LENGTH));
         }
 
         NUM_ACTIONS = actions.size();

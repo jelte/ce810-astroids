@@ -4,19 +4,20 @@ import math.Vector2d;
 
 import java.awt.*;
 
-import static battle.Constants.*;
+import static battle.Constants.missileTTL;
+import static battle.Constants.pColors;
 
 public class BattleMissile extends GameObject {
 
-    int ttl;
-    int id;
-    Color color;
+    private int timeToLive;
+    private int playerId;
+    private Color color;
 
-    public BattleMissile(Vector2d s, Vector2d v, int id) {
+    public BattleMissile(Vector2d s, Vector2d v, int playerId) {
         super(s, v);
-        this.id = id;
-        color = pColors[id];
-        ttl = missileTTL;
+        this.playerId = playerId;
+        color = pColors[playerId];
+        timeToLive = missileTTL;
         radius = 4;
     }
 
@@ -24,15 +25,15 @@ public class BattleMissile extends GameObject {
     public void update() {
         if (!isDead()) {
             location.add(velocity);
-            ttl--;
+            timeToLive--;
         }
     }
 
     @Override
     public BattleMissile copy() {
-        BattleMissile copy = new BattleMissile(location, velocity, id);
+        BattleMissile copy = new BattleMissile(location, velocity, playerId);
         updateClone(copy);
-        copy.ttl = ttl;
+        copy.timeToLive = timeToLive;
         copy.color = color;
         return copy;
     }
@@ -40,20 +41,20 @@ public class BattleMissile extends GameObject {
     @Override
     public void draw(Graphics2D g) {
         g.setColor(color);
-        g.fillOval((int) (location.x-radius), (int) (location.y-radius), (int) radius * 2, (int) radius * 2);
+        g.fillOval((int) (location.x - radius), (int) (location.y - radius), (int) radius * 2, (int) radius * 2);
     }
 
     public boolean isDead() {
-        return ttl <= 0;
+        return timeToLive <= 0;
     }
 
     public void hit() {
-        // kill it by setting ttl to zero
-        ttl = 0;
+        // kill it by setting timeToLive to zero
+        timeToLive = 0;
     }
 
     public String toString() {
-        return ttl + " :> " + location;
+        return timeToLive + " :> " + location;
     }
 
 

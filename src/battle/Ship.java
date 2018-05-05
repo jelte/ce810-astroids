@@ -9,35 +9,28 @@ import static battle.Constants.*;
 
 public class Ship extends GameObject {
 
+    public static double scale = 5;
+    public static double maxRelease = 10;
     // define the shape of the ship
     static int[] xp = {-2, 0, 2, 0};
     static int[] yp = {2, -2, 2, 0};
-
     // this is the thrust poly that will be drawn when the ship
     // is thrusting
     static int[] xpThrust = {-2, 0, 2, 0};
     static int[] ypThrust = {2, 3, 2, 0};
-    public static double scale = 5;
-
     // define how quickly the ship will rotate
     static double steerStep = 10 * Math.PI / 180;
     static double maxSpeed = 3;
-
     // this is the friction that makes the ship slow down over time
     static double loss = 0.99;
-
-    private double releaseVelocity = 0;
-    double minVelocity = 2;
-    public static double maxRelease = 10;
-    private Color color = Color.white;
-    private boolean thrusting = false;
-
     private static double gravity = 0.0;
-
     // position and velocity
     public Vector2d d;
-
-    // played id (used for drawing)
+    double minVelocity = 2;
+    private double releaseVelocity = 0;
+    private Color color = Color.white;
+    private boolean thrusting = false;
+    // played playerId (used for drawing)
     private int playerID;
 
 
@@ -45,30 +38,6 @@ public class Ship extends GameObject {
         super(new Vector2d(location, true), new Vector2d(velocity, true));
         this.d = new Vector2d(d, true);
         this.playerID = playerID;
-    }
-
-    public Ship copy() {
-        Ship ship = new Ship(location, velocity, d, playerID);
-        ship.releaseVelocity = releaseVelocity;
-        return ship;
-    }
-
-    public double radius() {
-        return scale * 2.4;
-    }
-
-//    public Ship() {
-//        super(new Vector2d(), new Vector2d());
-//        d = new Vector2d(0, -1);
-//    }
-//
-
-    public void reset() {
-        location.set(width / 2, height / 2);
-        velocity.zero();
-        d.set(0, -1);
-        dead = false;
-        // System.out.println("Reset the ship ");
     }
 
     private static double clamp(double speed, double min, double max) {
@@ -81,6 +50,30 @@ public class Ship extends GameObject {
         }
 
         return speed;
+    }
+
+    public Ship copy() {
+        Ship ship = new Ship(location, velocity, d, playerID);
+        ship.releaseVelocity = releaseVelocity;
+        return ship;
+    }
+
+//    public Ship() {
+//        super(new Vector2d(), new Vector2d());
+//        d = new Vector2d(0, -1);
+//    }
+//
+
+    public double radius() {
+        return scale * 2.4;
+    }
+
+    public void reset() {
+        location.set(width / 2, height / 2);
+        velocity.zero();
+        d.set(0, -1);
+        dead = false;
+        // System.out.println("Reset the ship ");
     }
 
     public Ship update(Action action) {

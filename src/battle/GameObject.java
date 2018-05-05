@@ -16,7 +16,9 @@ public abstract class GameObject {
     }
 
     public abstract void update();
+
     public abstract void draw(Graphics2D g);
+
     public abstract GameObject copy();
 
     protected GameObject updateClone(GameObject copyObject) {
@@ -32,7 +34,7 @@ public abstract class GameObject {
     public abstract boolean isDead();
 
     public void hit() {
-        dead  = true;
+        dead = true;
     }
 
     public double radius() {

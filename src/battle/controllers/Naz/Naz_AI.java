@@ -14,11 +14,10 @@ public class Naz_AI implements BattleController {
     }
 
 
-
-    public Action getAction(SimpleBattle game ) {
+    public Action getAction(SimpleBattle game) {
         Action action = new Action();
         // Work out what we want to do
-        action.shoot =true; //don't forget to set to true  ///The ship will always shoot because it's free and it's simple enough
+        action.shoot = true; //don't forget to set to true  ///The ship will always shoot because it's free and it's simple enough
         //  TODO
         action.thrust = 1;
         action.turn = 20;
@@ -28,20 +27,18 @@ public class Naz_AI implements BattleController {
         //getTicks possibly
 
 
+        if (action.shoot == true) {
+            //action.turn = 3;
+            //action.thrust shall be either 0 or 1
+            // random value will increment/vary in randomly
+            action.thrust = Math.random() * 10;
+        }
+        //  TODO
 
-    if(action.shoot==true)
-    {
-        //action.turn = 3;
-        //action.thrust shall be either 0 or 1
-        // random value will increment/vary in randomly
-        action.thrust = Math.random()*10;
+        // Return the action variable to the game
+
+        return action;
     }
-    //  TODO
-
-    // Return the action variable to the game
-
-    return action;
-}
 
 
 }

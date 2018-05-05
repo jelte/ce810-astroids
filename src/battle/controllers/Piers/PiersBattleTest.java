@@ -2,7 +2,6 @@ package battle.controllers.Piers;
 
 import battle.BattleController;
 import battle.SimpleBattle;
-import battle.controllers.mmmcts.MMMCTS;
 
 /**
  * Created by pwillic on 12/06/2015.

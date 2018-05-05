@@ -25,7 +25,7 @@ public class PiersMCTS implements BattleController {
         Action action = currentBestAction.getAction();
 
 
-        if (root == null) root = new BetterMCTSNode(2.0,  this);
+        if (root == null) root = new BetterMCTSNode(2.0, this);
         if (currentBestAction.getTimesUsed() >= ACTIONS_PER_MACRO) root = new BetterMCTSNode(2.0, this);
 
         int i = 0;

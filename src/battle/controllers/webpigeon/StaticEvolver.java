@@ -18,10 +18,6 @@ public class StaticEvolver {
         this.rch = new SimpleRandomHillClimberEngine(new double[]{2.7631328506251744, 0.746687716615824, 0.11574670823251669}, eval);
     }
 
-    public double[] getBest() {
-        return rch.run(100);
-    }
-
     public static void main(String[] args) {
         SimpleBattle start = new SimpleBattle(false);
         start.reset();
@@ -30,6 +26,10 @@ public class StaticEvolver {
         double[] best = evo.getBest();
 
         System.out.println(Arrays.toString(best));
+    }
+
+    public double[] getBest() {
+        return rch.run(100);
     }
 
 

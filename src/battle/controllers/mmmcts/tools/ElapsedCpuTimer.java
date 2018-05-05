@@ -9,16 +9,13 @@ import java.lang.management.ThreadMXBean;
 
 public class ElapsedCpuTimer {
 
+    public TimerType type = TimerType.WALL_TIME;
     // allows for easy reporting of elapsed time
     ThreadMXBean bean = ManagementFactory.getThreadMXBean();
     long oldTime;
     long maxTime;
 
-    public enum TimerType {
-        WALL_TIME, CPU_TIME, USER_TIME
-    };
-
-    public TimerType type = TimerType.WALL_TIME;
+    ;
 
     public ElapsedCpuTimer(TimerType type) {
         this.type = type;
@@ -29,8 +26,7 @@ public class ElapsedCpuTimer {
         oldTime = getTime();
     }
 
-    public ElapsedCpuTimer copy()
-    {
+    public ElapsedCpuTimer copy() {
         ElapsedCpuTimer newCpuTimer = new ElapsedCpuTimer(this.type);
         newCpuTimer.maxTime = this.maxTime;
         newCpuTimer.oldTime = this.oldTime;
@@ -42,7 +38,6 @@ public class ElapsedCpuTimer {
         return getTime() - oldTime;
     }
 
-
     public long elapsedNanos() {
         return (long) (elapsed() / 1000.0);
     }
@@ -52,18 +47,16 @@ public class ElapsedCpuTimer {
     }
 
     public double elapsedSeconds() {
-        return elapsedMillis()/1000.0;
+        return elapsedMillis() / 1000.0;
     }
 
     public double elapsedMinutes() {
-        return elapsedMillis()/1000.0/60.0;
+        return elapsedMillis() / 1000.0 / 60.0;
     }
-
 
     public double elapsedHours() {
-        return elapsedMinutes()/60.0;
+        return elapsedMinutes() / 60.0;
     }
-
 
     public String toString() {
         // now resets the timer...
@@ -98,7 +91,7 @@ public class ElapsedCpuTimer {
         if (bean.isCurrentThreadCpuTimeSupported()) {
             return bean.getCurrentThreadCpuTime();
         } else {
-        	throw new RuntimeException("CpuTime NOT Supported");
+            throw new RuntimeException("CpuTime NOT Supported");
         }
     }
 
@@ -106,7 +99,7 @@ public class ElapsedCpuTimer {
         if (bean.isCurrentThreadCpuTimeSupported()) {
             return bean.getCurrentThreadUserTime();
         } else {
-        	throw new RuntimeException("UserTime NOT Supported");
+            throw new RuntimeException("UserTime NOT Supported");
         }
 
     }
@@ -116,8 +109,7 @@ public class ElapsedCpuTimer {
 
     }
 
-    public long remainingTimeMillis()
-    {
+    public long remainingTimeMillis() {
         long diff = maxTime - elapsed();
         return (long) (diff / 1000000.0);
     }
@@ -127,6 +119,10 @@ public class ElapsedCpuTimer {
             return true;
         }
         return false;
+    }
+
+    public enum TimerType {
+        WALL_TIME, CPU_TIME, USER_TIME
     }
 
 }

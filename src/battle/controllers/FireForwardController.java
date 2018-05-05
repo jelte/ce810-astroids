@@ -1,7 +1,8 @@
 package battle.controllers;
 
 import battle.Action;
-import battle.*;
+import battle.DebugController;
+import battle.SimpleBattle;
 
 import java.awt.*;
 
@@ -11,7 +12,7 @@ import java.awt.*;
 public class FireForwardController extends DebugController {
     @Override
     public Action getAction(SimpleBattle gameStateCopy) {
-        return new Action(1,0,true);
+        return new Action(1, 0, true);
     }
 
     @Override

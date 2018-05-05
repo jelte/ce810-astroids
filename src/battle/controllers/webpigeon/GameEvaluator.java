@@ -26,7 +26,7 @@ public class GameEvaluator implements Eval2 {
         StupidGAWrapper controller1 = new StupidGAWrapper(a);
 
         int tick = 0;
-        while(!currBattle.isGameOver()) {
+        while (!currBattle.isGameOver()) {
             Action action1 = controller1.getMove();
 
             currBattle.update(action1);

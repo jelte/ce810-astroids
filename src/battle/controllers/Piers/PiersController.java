@@ -50,7 +50,7 @@ public class PiersController implements BattleController {
         // Run the GA?
         PiersController best = candidates.get(0);
 
-        while (best.fitness < TERMINATION_SCORE){
+        while (best.fitness < TERMINATION_SCORE) {
 
         }
     }

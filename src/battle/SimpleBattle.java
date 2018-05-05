@@ -3,11 +3,10 @@ package battle;
 import math.Vector2d;
 import utilities.JEasyFrame;
 
+import java.awt.*;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.awt.*;
 import java.util.List;
-
 
 import static battle.Constants.*;
 
@@ -22,16 +21,12 @@ import static battle.Constants.*;
 
 public class SimpleBattle {
 
-    // play a time limited game with a strict missile budget for
-    // each player
+    private final Object _objects = new Object();
     private int nMissiles = 100;
     private int nTicks = 1000;
     private int releaseVelocity = 5;
-
     private boolean visible = true;
-
     private List<GameObject> objects;
-    private final Object _objects = new Object();
     private PlayerStats stats;
 
     private Ship ship;
@@ -57,7 +52,7 @@ public class SimpleBattle {
         return currentTick;
     }
 
-    public int playGame(BattleController player) {
+    public void playGame(BattleController player) {
         this.player = player;
         reset();
 
@@ -80,8 +75,6 @@ public class SimpleBattle {
         if (this.player instanceof KeyListener) {
             view.removeKeyListener((KeyListener) this.player);
         }
-
-        return 0;
     }
 
     public void reset() {
@@ -101,23 +94,16 @@ public class SimpleBattle {
     }
 
     public void update() {
-        // get the actions from each player
-
-        // apply them to each player's ship, taking actions as necessary
-        Action a1 = player.getAction(this.clone());
-        update(a1);
+        update(player.getAction(this.clone()));
     }
 
     public BattleController getPlayer() {
         return player;
     }
 
-    public void update(Action a1) {
+    public void update(Action action) {
         // now apply them to the ships
-        ship.update(a1);
-
-        // TODO This isn't going to work anymore
-//        checkCollision(ship);
+        ship.update(action);
 
         synchronized (_objects) {
             for (int first = 0; first < objects.size() - 1; first++) {
@@ -129,7 +115,7 @@ public class SimpleBattle {
 
 
         // and fire any missiles as necessary
-        if (a1.shoot) fireMissile(ship.getLocation(), ship.d);
+        if (action.shoot) fireMissile(ship.getLocation(), ship.d);
 
         wrap(ship);
 
@@ -166,7 +152,7 @@ public class SimpleBattle {
         return state;
     }
 
-    protected List<GameObject> copyObjects() {
+    private List<GameObject> copyObjects() {
         List<GameObject> objectClone = new ArrayList<>();
         for (GameObject object : objects) {
             objectClone.add(object.copy());
@@ -175,7 +161,7 @@ public class SimpleBattle {
         return objectClone;
     }
 
-    protected void checkCollision(GameObject first, GameObject second) {
+    private void checkCollision(GameObject first, GameObject second) {
         if (first == second) return;
         if (first instanceof Asteroid && second instanceof Asteroid) return;
         if (first instanceof BattleMissile && second instanceof BattleMissile) return;
@@ -196,7 +182,7 @@ public class SimpleBattle {
         return ret;
     }
 
-    public void sleep() {
+    private void sleep() {
         try {
             Thread.sleep(delay);
         } catch (Exception e) {
@@ -204,7 +190,7 @@ public class SimpleBattle {
         }
     }
 
-    protected void fireMissile(Vector2d s, Vector2d d) {
+    private void fireMissile(Vector2d s, Vector2d d) {
         // need all the usual missile firing code here
         Ship currentShip = ship;
         if (stats.nMissiles < nMissiles) {
@@ -282,6 +268,26 @@ public class SimpleBattle {
         return currentTick >= nTicks;
     }
 
+    private void makeAsteroids(int nAsteroids) {
+        Vector2d centre = new Vector2d(width / 2, height / 2, true);
+        // assumes that the game object list is currently empty
+        int target = objects.size() + nAsteroids;
+        while (objects.size() < target) {
+            // choose a random position and velocity
+            Vector2d location = new Vector2d(rand.nextDouble() * width,
+                    rand.nextDouble() * height, true);
+            Vector2d velocity = new Vector2d(rand.nextGaussian(), rand.nextGaussian(), true);
+            if (location.dist(centre) > safeRadius && velocity.mag() > 0.5) {
+                Asteroid a = new Asteroid(location, velocity, 0);
+                objects.add(a);
+            }
+        }
+    }
+
+    public PlayerStats getStats() {
+        return stats;
+    }
+
     static class PlayerStats {
         int nMissiles;
         int nPoints;
@@ -302,25 +308,5 @@ public class SimpleBattle {
         public String toString() {
             return nMissiles + " : " + nPoints;
         }
-    }
-
-    private void makeAsteroids(int nAsteroids) {
-        Vector2d centre = new Vector2d(width / 2, height / 2, true);
-        // assumes that the game object list is currently empty
-        int target = objects.size() + nAsteroids;
-        while (objects.size() < target) {
-            // choose a random position and velocity
-            Vector2d location = new Vector2d(rand.nextDouble() * width,
-                    rand.nextDouble() * height, true);
-            Vector2d velocity = new Vector2d(rand.nextGaussian(), rand.nextGaussian(), true);
-            if (location.dist(centre) > safeRadius && velocity.mag() > 0.5) {
-                Asteroid a = new Asteroid(location, velocity, 0);
-                objects.add(a);
-            }
-        }
-    }
-
-    public PlayerStats getStats() {
-        return stats;
     }
 }

@@ -11,8 +11,7 @@ import java.util.Random;
  * Date: 07/11/13
  * Time: 17:13
  */
-public class SingleMCTSPlayer
-{
+public class SingleMCTSPlayer {
     /**
      * Root of the tree.
      */
@@ -26,27 +25,26 @@ public class SingleMCTSPlayer
 
     /**
      * Creates the MCTS player with a sampleRandom generator object.
+     *
      * @param a_rnd sampleRandom generator object.
      */
-    public SingleMCTSPlayer(Random a_rnd)
-    {
+    public SingleMCTSPlayer(Random a_rnd) {
         m_rnd = a_rnd;
         m_root = new SingleTreeNode(a_rnd);
     }
 
     /**
      * Inits the tree with the new observation state in the root.
+     *
      * @param a_gameState current state of the game.
      */
-    public void init(SimpleBattle a_gameState)
-    {
+    public void init(SimpleBattle a_gameState) {
         //Set the game observation to a newly root node.
         m_root = new SingleTreeNode(m_rnd);
         m_root.state = a_gameState;
     }
 
-    public int run(ElapsedCpuTimer elapsedTimer)
-    {
+    public int run(ElapsedCpuTimer elapsedTimer) {
         //Do the search within the available time.
         m_root.mctsSearch(elapsedTimer);
 

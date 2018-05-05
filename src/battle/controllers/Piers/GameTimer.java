@@ -28,7 +28,7 @@ public class GameTimer {
     }
 
     public void setTimeBudgetMilliseconds(long budget) {
-        if(timeSet) throw new IllegalAccessError("You shouldn't try to set the time budget now");
+        if (timeSet) throw new IllegalAccessError("You shouldn't try to set the time budget now");
         timeBudget = (long) (budget * 1.0E6);
         timeSet = true;
     }

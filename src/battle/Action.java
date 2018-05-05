@@ -11,14 +11,15 @@ public class Action {
     public double turn;
     public boolean shoot;
 
-    public Action() {}
+    public Action() {
+    }
 
     /**
      * Create a new action to be executed by the controller
      *
      * @param thrust 1 is full thrust, 0 is nothing
-     * @param turn 1 is clockwise, -1 is anticlockwise, 0 is don't turn
-     * @param shoot true is fire, false is don't fire
+     * @param turn   1 is clockwise, -1 is anticlockwise, 0 is don't turn
+     * @param shoot  true is fire, false is don't fire
      */
     public Action(double thrust, double turn, boolean shoot) {
         this.thrust = thrust;

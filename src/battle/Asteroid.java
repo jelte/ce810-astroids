@@ -18,7 +18,7 @@ public class Asteroid extends GameObject {
     private boolean dead;
     private int size;
 
-    public Asteroid( Vector2d s, Vector2d v, int size) {
+    public Asteroid(Vector2d s, Vector2d v, int size) {
         super(s, v);
         rotRate = (rand.nextDouble() - 0.5) * Math.PI / 20;
         rot = 0;
@@ -65,10 +65,10 @@ public class Asteroid extends GameObject {
         g.setStroke(stroke);
 //        g.drawPolygon(px, py, px.length);
         g.drawOval(
-                (int)(-radius),
-                (int)(-radius),
-                (int)(radius * 2),
-                (int)(radius * 2)
+                (int) (-radius),
+                (int) (-radius),
+                (int) (radius * 2),
+                (int) (radius * 2)
         );
         // restore original coordinate system
         g.setTransform(at);
@@ -85,6 +85,7 @@ public class Asteroid extends GameObject {
         location.add(velocity);
         rot += rotRate;
     }
+
     public String toString() {
         return location.toString();
     }
