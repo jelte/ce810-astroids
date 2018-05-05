@@ -283,7 +283,7 @@ public class SimpleBattle {
     }
 
     public int getMissilesLeft() {
-        return stats.nMissiles - nMissiles;
+        return nMissiles - stats.nMissiles;
     }
 
     private void wrap(GameObject gameObject) {

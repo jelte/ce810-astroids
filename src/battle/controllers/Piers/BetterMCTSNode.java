@@ -130,8 +130,7 @@ public class BetterMCTSNode {
         int currentRolloutDepth = this.currentDepth;
         while (maxDepth > currentRolloutDepth && !state.isGameOver()) {
             Action first = allActions[random.nextInt(allActions.length)];
-            Action second = allActions[random.nextInt(allActions.length)];
-            for (int i = 0; i < mcts.ACTIONS_PER_MACRO; i++) {
+            for (int i = 0; i < PiersMCTS.ACTIONS_PER_MACRO; i++) {
                 state.update(first);
             }
             currentRolloutDepth++;
