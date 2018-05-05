@@ -13,7 +13,7 @@ public interface Constants {
     int width = 640;
     int height = 480;
     Dimension size = new Dimension(width, height);
-    int safeRadius = height / 20;
+    int safeRadius = height / 10;
     Color bg = Color.black;
     Font font = new Font("Courier", Font.PLAIN, 20);
 
@@ -34,6 +34,7 @@ public interface Constants {
     int N_ASTEROIDS = 4;
     int SHIP_MAX_SPEED = 5;
     int SHIP_STEER_RATE = 6;
-    int N_PARAMS = 7;
+    int N_ASTEROID_CHILDREN = 7;
+    int N_PARAMS = 8;
 
 }

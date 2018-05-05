@@ -18,8 +18,8 @@ public class Asteroid extends GameObject {
     private boolean dead;
     private int size;
 
-    public Asteroid(Vector2d s, Vector2d v, int size) {
-        super(s, v);
+    public Asteroid(Vector2d location, Vector2d velocity, int size) {
+        super(location, velocity);
         rotRate = (rand.nextDouble() - 0.5) * Math.PI / 20;
         rot = 0;
         this.size = size;
@@ -92,5 +92,9 @@ public class Asteroid extends GameObject {
 
     public void hit() {
         dead = true;
+    }
+
+    public int getSize() {
+        return size;
     }
 }

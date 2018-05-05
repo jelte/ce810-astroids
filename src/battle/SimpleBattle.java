@@ -28,6 +28,7 @@ public class SimpleBattle {
     private int bulletInitialVelocity = 5;
     private int bulletTimeToLive = 60;
     private int nAsteroids = 10;
+    private int nAsteroidChildren = 2;
     private int maxSpeed = 3;
     private int steerRate = 10;
     private boolean visible = true;
@@ -43,12 +44,12 @@ public class SimpleBattle {
         this(true);
     }
 
-    public SimpleBattle(boolean visible){
+    public SimpleBattle(boolean visible) {
         this(visible, null);
     }
 
     public SimpleBattle(boolean visible, int[] params) {
-        if(params != null) handleParameters(params);
+        if (params != null) handleParameters(params);
         this.objects = new ArrayList<>();
         this.visible = visible;
 
@@ -58,27 +59,30 @@ public class SimpleBattle {
         }
     }
 
-    private void handleParameters(int[] params){
-        if(params[N_TICKS] != -1){
+    private void handleParameters(int[] params) {
+        if (params[N_TICKS] != -1) {
             tickLimit = params[N_TICKS];
         }
-        if(params[N_MISSILES] != -1){
+        if (params[N_MISSILES] != -1) {
             nMissiles = params[N_MISSILES];
         }
-        if(params[BULLET_INITIAL_VELOCITY] != -1){
+        if (params[BULLET_INITIAL_VELOCITY] != -1) {
             bulletInitialVelocity = params[BULLET_INITIAL_VELOCITY];
         }
-        if(params[BULLET_TIME_TO_LIVE] != -1){
+        if (params[BULLET_TIME_TO_LIVE] != -1) {
             bulletTimeToLive = params[BULLET_TIME_TO_LIVE];
         }
-        if(params[N_ASTEROIDS] != -1){
+        if (params[N_ASTEROIDS] != -1) {
             nAsteroids = params[N_ASTEROIDS];
         }
-        if(params[SHIP_MAX_SPEED] != -1){
+        if (params[SHIP_MAX_SPEED] != -1) {
             maxSpeed = params[SHIP_MAX_SPEED];
         }
-        if(params[SHIP_STEER_RATE] != -1){
+        if (params[SHIP_STEER_RATE] != -1) {
             steerRate = params[SHIP_STEER_RATE];
+        }
+        if(params[N_ASTEROID_CHILDREN] != -1){
+            nAsteroidChildren = params[N_ASTEROID_CHILDREN];
         }
     }
 
@@ -86,7 +90,7 @@ public class SimpleBattle {
         return currentTick;
     }
 
-    public void playGame(BattleController player){
+    public void playGame(BattleController player) {
         playGame(player, new NullRecorder());
     }
 
@@ -152,13 +156,12 @@ public class SimpleBattle {
             }
         }
 
-
         // and fire any missiles as necessary
         if (action.shoot) fireMissile(ship.getLocation(), ship.direction);
 
         wrap(ship);
-
         synchronized (_objects) {
+            List<GameObject> spawned = new ArrayList<>();
             // here need to add the game objects ...
             List<GameObject> killList = new ArrayList<>();
             for (GameObject object : objects) {
@@ -166,10 +169,23 @@ public class SimpleBattle {
                 wrap(object);
                 if (object.isDead()) {
                     killList.add(object);
+                    if(object instanceof Asteroid){
+                        Asteroid asteroid = (Asteroid) object;
+                        if(asteroid.getSize() < asteroidRadii.length - 1){
+                            // Make new Asteroids
+                            for(int i = 0; i < nAsteroidChildren; i++){
+                                Vector2d newVelocity = new Vector2d(asteroid.velocity, true);
+                                double rotationAmount = (Math.random() * 60) - 30;
+                                newVelocity.rotate(Math.toRadians(rotationAmount));
+                                spawned.add(new Asteroid(asteroid.location, newVelocity, asteroid.getSize() + 1));
+                            }
+                        }
+                    }
                 }
             }
 
             objects.removeAll(killList);
+            objects.addAll(spawned);
         }
         currentTick++;
 
@@ -205,7 +221,6 @@ public class SimpleBattle {
         if (first instanceof Asteroid && second instanceof Asteroid) return;
         if (first instanceof BattleMissile && second instanceof BattleMissile) return;
         if (overlap(first, second)) {
-//            System.out.println(first.getClass().getSimpleName() + " hit " + second.getClass().getSimpleName());
             if (!(first instanceof Ship || second instanceof Ship)) {
                 stats.nPoints += 10;
             }
@@ -237,8 +252,6 @@ public class SimpleBattle {
             // make it clear the ship
             missile.getVelocity().add(missile.getVelocity(), (currentShip.radius() + missileRadius) * 1.5 / missile.getVelocity().mag());
             objects.add(missile);
-            // System.out.println("Fired: " + m);
-            // sounds.fire();
             stats.nMissiles++;
         }
     }
@@ -296,12 +309,17 @@ public class SimpleBattle {
 
     public boolean isGameOver() {
         if (ship.isDead()) return true;
-        if (getMissilesLeft() >= 0 && getMissilesLeft() >= 0) {
-            //ensure that there are no bullets left in play
-            if (objects.isEmpty()) {
-                return true;
-            }
+        // Is just the ship left?
+        if (objects.size() == 1) {
+            return true;
         }
+
+        int asteroidCount = 0;
+        for(GameObject object : objects){
+            asteroidCount += (object instanceof Asteroid) ? 1 : 0;
+        }
+        if(asteroidCount == 0) return true;
+
 
         return currentTick >= tickLimit;
     }
@@ -315,7 +333,7 @@ public class SimpleBattle {
             Vector2d location = new Vector2d(rand.nextDouble() * width,
                     rand.nextDouble() * height, true);
             Vector2d velocity = new Vector2d(rand.nextGaussian(), rand.nextGaussian(), true);
-            if (location.dist(centre) > safeRadius && velocity.mag() > 0.5) {
+            if (location.dist(centre) > safeRadius) {
                 Asteroid a = new Asteroid(location, velocity, 0);
                 objects.add(a);
             }
