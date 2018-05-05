@@ -23,8 +23,9 @@ public class SimpleBattle {
 
     private final Object _objects = new Object();
     private int nMissiles = 100;
-    private int nTicks = 1000;
-    private int releaseVelocity = 5;
+    private int tickLimit = 1000;
+    private int bulletInitialVelocity = 5;
+    private int bulletTimeToLive = 60;
     private boolean visible = true;
     private List<GameObject> objects;
     private PlayerStats stats;
@@ -38,13 +39,33 @@ public class SimpleBattle {
         this(true);
     }
 
-    public SimpleBattle(boolean visible) {
+    public SimpleBattle(boolean visible){
+        this(visible, null);
+    }
+
+    public SimpleBattle(boolean visible, int[] params) {
+        if(params != null) handleParameters(params);
         this.objects = new ArrayList<>();
         this.visible = visible;
 
         if (visible) {
             view = new BattleView(this);
             new JEasyFrame(view, "battle");
+        }
+    }
+
+    private void handleParameters(int[] params){
+        if(params[N_TICKS] != -1){
+            tickLimit = params[N_TICKS];
+        }
+        if(params[N_MISSILES] != -1){
+            nMissiles = params[N_MISSILES];
+        }
+        if(params[BULLET_INITIAL_VELOCITY] != -1){
+            bulletInitialVelocity = params[BULLET_INITIAL_VELOCITY];
+        }
+        if(params[BULLET_TIME_TO_LIVE] != -1){
+            bulletTimeToLive = params[BULLET_TIME_TO_LIVE];
         }
     }
 
@@ -79,18 +100,18 @@ public class SimpleBattle {
 
     public void reset() {
         objects.clear();
-        ship = buildShip(width / 2, height / 2, 0);
+        ship = buildShip(width / 2, height / 2);
         this.currentTick = 0;
 
         stats = new PlayerStats(0, 0);
     }
 
-    protected Ship buildShip(int x, int y, int playerID) {
+    protected Ship buildShip(int x, int y) {
         Vector2d position = new Vector2d(x, y, true);
         Vector2d speed = new Vector2d(true);
         Vector2d direction = new Vector2d(1, 0, true);
 
-        return new Ship(position, speed, direction, playerID);
+        return new Ship(position, speed, direction);
     }
 
     public void update() {
@@ -142,7 +163,7 @@ public class SimpleBattle {
 
 
     public SimpleBattle clone() {
-        SimpleBattle state = new SimpleBattle(false);
+        SimpleBattle state = new SimpleBattle(false, null);
         state.objects = copyObjects();
         state.stats = new PlayerStats(this.stats.nMissiles, this.stats.nPoints);
         state.currentTick = currentTick;
@@ -177,9 +198,8 @@ public class SimpleBattle {
 
     private boolean overlap(GameObject first, GameObject second) {
         // otherwise do the default check
-        double dist = first.getLocation().dist(second.getLocation());
-        boolean ret = dist < (first.radius() + second.radius());
-        return ret;
+        double distance = first.getLocation().dist(second.getLocation());
+        return distance < (first.radius() + second.radius());
     }
 
     private void sleep() {
@@ -194,8 +214,8 @@ public class SimpleBattle {
         // need all the usual missile firing code here
         Ship currentShip = ship;
         if (stats.nMissiles < nMissiles) {
-            BattleMissile missile = new BattleMissile(s, new Vector2d(0, 0, true), 0);
-            missile.getVelocity().add(d, releaseVelocity);
+            BattleMissile missile = new BattleMissile(s, new Vector2d(0, 0, true), bulletTimeToLive);
+            missile.getVelocity().add(d, bulletInitialVelocity);
             // make it clear the ship
             missile.getVelocity().add(missile.getVelocity(), (currentShip.radius() + missileRadius) * 1.5 / missile.getVelocity().mag());
             objects.add(missile);
@@ -265,7 +285,7 @@ public class SimpleBattle {
             }
         }
 
-        return currentTick >= nTicks;
+        return currentTick >= tickLimit;
     }
 
     private void makeAsteroids(int nAsteroids) {

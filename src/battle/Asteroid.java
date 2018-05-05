@@ -5,7 +5,7 @@ import math.Vector2d;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-import static battle.Constants.radii;
+import static battle.Constants.asteroidRadii;
 import static battle.Constants.rand;
 
 public class Asteroid extends GameObject {
@@ -23,7 +23,7 @@ public class Asteroid extends GameObject {
         rotRate = (rand.nextDouble() - 0.5) * Math.PI / 20;
         rot = 0;
         this.size = size;
-        radius = radii[size];
+        radius = asteroidRadii[size];
         setPolygon();
     }
 

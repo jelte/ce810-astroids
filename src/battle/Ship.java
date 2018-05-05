@@ -30,14 +30,11 @@ public class Ship extends GameObject {
     private double releaseVelocity = 0;
     private Color color = Color.white;
     private boolean thrusting = false;
-    // played playerId (used for drawing)
-    private int playerID;
 
 
-    public Ship(Vector2d location, Vector2d velocity, Vector2d d, int playerID) {
+    public Ship(Vector2d location, Vector2d velocity, Vector2d d) {
         super(new Vector2d(location, true), new Vector2d(velocity, true));
         this.d = new Vector2d(d, true);
-        this.playerID = playerID;
     }
 
     private static double clamp(double speed, double min, double max) {
@@ -53,7 +50,7 @@ public class Ship extends GameObject {
     }
 
     public Ship copy() {
-        Ship ship = new Ship(location, velocity, d, playerID);
+        Ship ship = new Ship(location, velocity, d);
         ship.releaseVelocity = releaseVelocity;
         return ship;
     }
@@ -115,7 +112,7 @@ public class Ship extends GameObject {
     }
 
     public void draw(Graphics2D g) {
-        color = playerID == 0 ? Color.green : Color.blue;
+        color = Color.green;
         AffineTransform at = g.getTransform();
         g.translate(location.x, location.y);
         double rot = Math.atan2(d.y, d.x) + Math.PI / 2;

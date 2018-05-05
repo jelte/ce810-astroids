@@ -10,14 +10,12 @@ import static battle.Constants.pColors;
 public class BattleMissile extends GameObject {
 
     private int timeToLive;
-    private int playerId;
     private Color color;
 
-    public BattleMissile(Vector2d s, Vector2d v, int playerId) {
+    public BattleMissile(Vector2d s, Vector2d v, int timeToLive) {
         super(s, v);
-        this.playerId = playerId;
-        color = pColors[playerId];
-        timeToLive = missileTTL;
+        color = pColors[0];
+        this.timeToLive = timeToLive;
         radius = 4;
     }
 
@@ -31,7 +29,7 @@ public class BattleMissile extends GameObject {
 
     @Override
     public BattleMissile copy() {
-        BattleMissile copy = new BattleMissile(location, velocity, playerId);
+        BattleMissile copy = new BattleMissile(location, velocity, timeToLive);
         updateClone(copy);
         copy.timeToLive = timeToLive;
         copy.color = color;
