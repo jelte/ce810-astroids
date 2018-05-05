@@ -1,5 +1,6 @@
 package battle;
 
+import battle.recorders.NullRecorder;
 import math.Vector2d;
 import utilities.JEasyFrame;
 
@@ -27,6 +28,8 @@ public class SimpleBattle {
     private int bulletInitialVelocity = 5;
     private int bulletTimeToLive = 60;
     private int nAsteroids = 10;
+    private int maxSpeed = 3;
+    private int steerRate = 10;
     private boolean visible = true;
     private List<GameObject> objects;
     private PlayerStats stats;
@@ -71,13 +74,23 @@ public class SimpleBattle {
         if(params[N_ASTEROIDS] != -1){
             nAsteroids = params[N_ASTEROIDS];
         }
+        if(params[SHIP_MAX_SPEED] != -1){
+            maxSpeed = params[SHIP_MAX_SPEED];
+        }
+        if(params[SHIP_STEER_RATE] != -1){
+            steerRate = params[SHIP_STEER_RATE];
+        }
     }
 
     public int getTicks() {
         return currentTick;
     }
 
-    public void playGame(BattleController player) {
+    public void playGame(BattleController player){
+        playGame(player, new NullRecorder());
+    }
+
+    public void playGame(BattleController player, DataRecorder recorder) {
         this.player = player;
         reset();
 
@@ -92,9 +105,10 @@ public class SimpleBattle {
             view.setFocusable(true);
             view.requestFocus();
         }
-
+        recorder.stepUpdate(this);
         while (!isGameOver()) {
             update();
+            recorder.stepUpdate(this);
         }
 
         if (this.player instanceof KeyListener) {
@@ -110,12 +124,12 @@ public class SimpleBattle {
         stats = new PlayerStats(0, 0);
     }
 
-    protected Ship buildShip(int x, int y) {
+    private Ship buildShip(int x, int y) {
         Vector2d position = new Vector2d(x, y, true);
         Vector2d speed = new Vector2d(true);
         Vector2d direction = new Vector2d(1, 0, true);
 
-        return new Ship(position, speed, direction);
+        return new Ship(position, speed, direction, steerRate, maxSpeed);
     }
 
     public void update() {
@@ -140,7 +154,7 @@ public class SimpleBattle {
 
 
         // and fire any missiles as necessary
-        if (action.shoot) fireMissile(ship.getLocation(), ship.d);
+        if (action.shoot) fireMissile(ship.getLocation(), ship.direction);
 
         wrap(ship);
 

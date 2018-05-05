@@ -20,7 +20,6 @@ public interface Constants {
     Color[] pColors = {Color.blue, Color.red};
 
     int delay = 20;
-    double ac = 0.01;
     double t = 1.0;
     Random rand = new Random();
     int[] asteroidRadii = {30, 20, 10};
@@ -28,11 +27,13 @@ public interface Constants {
     int missileRadius = 2;
     int missileTTL = 60;
 
-    int N_PARAMS = 5;
     int N_TICKS = 0;
     int N_MISSILES = 1;
     int BULLET_INITIAL_VELOCITY = 2;
     int BULLET_TIME_TO_LIVE = 3;
     int N_ASTEROIDS = 4;
+    int SHIP_MAX_SPEED = 5;
+    int SHIP_STEER_RATE = 6;
+    int N_PARAMS = 7;
 
 }

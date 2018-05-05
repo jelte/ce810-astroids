@@ -141,9 +141,9 @@ public class StatSummary {
         add(n.doubleValue());
     }
 
-//    public void add(double[] d) {
-//        for (int i = 0; i < d.length; i++) {
-//            add(d[i]);
+//    public void add(double[] direction) {
+//        for (int i = 0; i < direction.length; i++) {
+//            add(direction[i]);
 //        }
 //    }
 //

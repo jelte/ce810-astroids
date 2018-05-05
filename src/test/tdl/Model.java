@@ -90,7 +90,7 @@ public class Model {
                 state[1] = j;
                 int cost = episode(state);
                 ss.add(cost);
-                // System.out.format("%d, %d, -> %d (v = %2.2f)\n", i, j, cost, v[i][j]);
+                // System.out.format("%direction, %direction, -> %direction (v = %2.2f)\n", i, j, cost, v[i][j]);
             }
         }
         System.out.println(ss);

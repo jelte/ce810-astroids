@@ -12,7 +12,7 @@ public abstract class DebugController implements RenderableBattleController {
     public void render(Graphics2D graphics2D, Ship ship) {
         AffineTransform at = graphics2D.getTransform();
         graphics2D.translate(ship.location.x, ship.location.y);
-        double rot = Math.atan2(ship.d.y, ship.d.x) + Math.PI / 2;
+        double rot = Math.atan2(ship.direction.y, ship.direction.x) + Math.PI / 2;
         graphics2D.rotate(rot);
         render(graphics2D);
         graphics2D.setTransform(at);
