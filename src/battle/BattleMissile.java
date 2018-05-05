@@ -17,20 +17,20 @@ public class BattleMissile extends GameObject {
         this.id = id;
         color = pColors[id];
         ttl = missileTTL;
-        r = 4;
+        radius = 4;
     }
 
     @Override
     public void update() {
-        if (!dead()) {
-            s.add(v);
+        if (!isDead()) {
+            location.add(velocity);
             ttl--;
         }
     }
 
     @Override
     public BattleMissile copy() {
-        BattleMissile copy = new BattleMissile(s, v, id);
+        BattleMissile copy = new BattleMissile(location, velocity, id);
         updateClone(copy);
         copy.ttl = ttl;
         copy.color = color;
@@ -40,10 +40,10 @@ public class BattleMissile extends GameObject {
     @Override
     public void draw(Graphics2D g) {
         g.setColor(color);
-        g.fillOval((int) (s.x-r), (int) (s.y-r), (int) r * 2, (int) r * 2);
+        g.fillOval((int) (location.x-radius), (int) (location.y-radius), (int) radius * 2, (int) radius * 2);
     }
 
-    public boolean dead() {
+    public boolean isDead() {
         return ttl <= 0;
     }
 
@@ -53,7 +53,7 @@ public class BattleMissile extends GameObject {
     }
 
     public String toString() {
-        return ttl + " :> " + s;
+        return ttl + " :> " + location;
     }
 
 

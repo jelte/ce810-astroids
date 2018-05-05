@@ -24,18 +24,18 @@ public class SimpleBattle {
 
     // play a time limited game with a strict missile budget for
     // each player
-    static int nMissiles = 100;
-    static int nTicks = 1000;
-    static int pointsPerKill = 10;
-    static int releaseVelocity = 5;
+    private int nMissiles = 100;
+    private int nTicks = 1000;
+    private int releaseVelocity = 5;
 
-    boolean visible = true;
+    private boolean visible = true;
 
-    List<GameObject> objects;
-    PlayerStats stats;
+    private List<GameObject> objects;
+    private final Object _objects = new Object();
+    private PlayerStats stats;
 
-    private Ship s1;
-    private BattleController p1;
+    private Ship ship;
+    private BattleController player;
     private BattleView view;
     private int currentTick;
 
@@ -58,17 +58,17 @@ public class SimpleBattle {
     }
 
     public int playGame(BattleController player) {
-        this.p1 = player;
+        this.player = player;
         reset();
 
         makeAsteroids(10);
-        objects.add(s1);
+        objects.add(ship);
 
 
         stats = new PlayerStats(0, 0);
 
-        if (p1 instanceof KeyListener) {
-            view.addKeyListener((KeyListener) p1);
+        if (this.player instanceof KeyListener) {
+            view.addKeyListener((KeyListener) this.player);
             view.setFocusable(true);
             view.requestFocus();
         }
@@ -77,8 +77,8 @@ public class SimpleBattle {
             update();
         }
 
-        if (p1 instanceof KeyListener) {
-            view.removeKeyListener((KeyListener) p1);
+        if (this.player instanceof KeyListener) {
+            view.removeKeyListener((KeyListener) this.player);
         }
 
         return 0;
@@ -86,7 +86,7 @@ public class SimpleBattle {
 
     public void reset() {
         objects.clear();
-        s1 = buildShip(width / 2, height / 2, 0);
+        ship = buildShip(width / 2, height / 2, 0);
         this.currentTick = 0;
 
         stats = new PlayerStats(0, 0);
@@ -104,44 +104,48 @@ public class SimpleBattle {
         // get the actions from each player
 
         // apply them to each player's ship, taking actions as necessary
-        Action a1 = p1.getAction(this.clone());
+        Action a1 = player.getAction(this.clone());
         update(a1);
     }
 
-    public BattleController getP1() {
-        return p1;
+    public BattleController getPlayer() {
+        return player;
     }
 
     public void update(Action a1) {
         // now apply them to the ships
-        s1.update(a1);
+        ship.update(a1);
 
         // TODO This isn't going to work anymore
-//        checkCollision(s1);
+//        checkCollision(ship);
 
-        for(int first = 0; first < objects.size() - 1; first++){
-            for(int second = first + 1; second < objects.size(); second++){
-                checkCollision(objects.get(first), objects.get(second));
+        synchronized (_objects) {
+            for (int first = 0; first < objects.size() - 1; first++) {
+                for (int second = first + 1; second < objects.size(); second++) {
+                    checkCollision(objects.get(first), objects.get(second));
+                }
             }
         }
 
 
         // and fire any missiles as necessary
-        if (a1.shoot) fireMissile(s1.s, s1.d);
+        if (a1.shoot) fireMissile(ship.getLocation(), ship.d);
 
-        wrap(s1);
+        wrap(ship);
 
-        // here need to add the game objects ...
-        List<GameObject> killList = new ArrayList<>();
-        for (GameObject object : objects) {
-            object.update();
-            wrap(object);
-            if (object.dead()) {
-                killList.add(object);
+        synchronized (_objects) {
+            // here need to add the game objects ...
+            List<GameObject> killList = new ArrayList<>();
+            for (GameObject object : objects) {
+                object.update();
+                wrap(object);
+                if (object.isDead()) {
+                    killList.add(object);
+                }
             }
-        }
 
-        objects.removeAll(killList);
+            objects.removeAll(killList);
+        }
         currentTick++;
 
         if (visible) {
@@ -158,7 +162,7 @@ public class SimpleBattle {
         state.currentTick = currentTick;
         state.visible = false; //stop MCTS people having all the games :p
 
-        state.s1 = s1.copy();
+        state.ship = ship.copy();
         return state;
     }
 
@@ -171,13 +175,13 @@ public class SimpleBattle {
         return objectClone;
     }
 
-    protected void checkCollision(GameObject first, GameObject second){
-        if(first == second) return;
-        if(first instanceof Asteroid && second instanceof Asteroid) return;
-        if(first instanceof BattleMissile && second instanceof BattleMissile) return;
-        if(overlap(first, second)) {
+    protected void checkCollision(GameObject first, GameObject second) {
+        if (first == second) return;
+        if (first instanceof Asteroid && second instanceof Asteroid) return;
+        if (first instanceof BattleMissile && second instanceof BattleMissile) return;
+        if (overlap(first, second)) {
 //            System.out.println(first.getClass().getSimpleName() + " hit " + second.getClass().getSimpleName());
-            if(!(first instanceof Ship || second instanceof Ship)){
+            if (!(first instanceof Ship || second instanceof Ship)) {
                 stats.nPoints += 10;
             }
             first.hit();
@@ -187,8 +191,8 @@ public class SimpleBattle {
 
     private boolean overlap(GameObject first, GameObject second) {
         // otherwise do the default check
-        double dist = first.s.dist(second.s);
-        boolean ret = dist < (first.r() + second.r());
+        double dist = first.getLocation().dist(second.getLocation());
+        boolean ret = dist < (first.radius() + second.radius());
         return ret;
     }
 
@@ -202,13 +206,13 @@ public class SimpleBattle {
 
     protected void fireMissile(Vector2d s, Vector2d d) {
         // need all the usual missile firing code here
-        Ship currentShip = s1;
+        Ship currentShip = ship;
         if (stats.nMissiles < nMissiles) {
-            BattleMissile m = new BattleMissile(s, new Vector2d(0, 0, true), 0);
-            m.v.add(d, releaseVelocity);
+            BattleMissile missile = new BattleMissile(s, new Vector2d(0, 0, true), 0);
+            missile.getVelocity().add(d, releaseVelocity);
             // make it clear the ship
-            m.s.add(m.v, (currentShip.r() + missileRadius) * 1.5 / m.v.mag());
-            objects.add(m);
+            missile.getVelocity().add(missile.getVelocity(), (currentShip.radius() + missileRadius) * 1.5 / missile.getVelocity().mag());
+            objects.add(missile);
             // System.out.println("Fired: " + m);
             // sounds.fire();
             stats.nMissiles++;
@@ -217,7 +221,7 @@ public class SimpleBattle {
 
     public void draw(Graphics2D g) {
         // for (Object ob : objects)
-        if (s1 == null) {
+        if (ship == null) {
             return;
         }
 
@@ -227,21 +231,23 @@ public class SimpleBattle {
         g.setColor(bg);
         g.fillRect(0, 0, size.width, size.height);
 
-        for (GameObject go : objects) {
-            go.draw(g);
+        synchronized (_objects) {
+            for (GameObject go : objects) {
+                go.draw(g);
+            }
         }
 
-        if(!s1.dead()) {
-            s1.draw(g);
+        if (!ship.isDead()) {
+            ship.draw(g);
         }
-        if (p1 instanceof RenderableBattleController) {
-            RenderableBattleController rbc = (RenderableBattleController) p1;
-            rbc.render(g, s1.copy());
+        if (player instanceof RenderableBattleController) {
+            RenderableBattleController rbc = (RenderableBattleController) player;
+            rbc.render(g, ship.copy());
         }
     }
 
     public Ship getShip() {
-        return s1.copy();
+        return ship.copy();
     }
 
     public List<GameObject> getObjects() {
@@ -259,13 +265,13 @@ public class SimpleBattle {
     private void wrap(GameObject ob) {
         // only wrap objects which are wrappable
         if (ob.wrappable()) {
-            ob.s.x = (ob.s.x + width) % width;
-            ob.s.y = (ob.s.y + height) % height;
+            ob.getLocation().x = (ob.getLocation().x + width) % width;
+            ob.getLocation().y = (ob.getLocation().y + height) % height;
         }
     }
 
     public boolean isGameOver() {
-        if(s1.dead()) return true;
+        if (ship.isDead()) return true;
         if (getMissilesLeft() >= 0 && getMissilesLeft() >= 0) {
             //ensure that there are no bullets left in play
             if (objects.isEmpty()) {
@@ -312,7 +318,9 @@ public class SimpleBattle {
                 objects.add(a);
             }
         }
-
     }
 
+    public PlayerStats getStats() {
+        return stats;
+    }
 }

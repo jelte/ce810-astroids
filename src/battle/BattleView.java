@@ -48,23 +48,19 @@ public class BattleView extends JComponent {
 
 
     public void paintState(Graphics2D g) {
-
-        for (GameObject object : game.objects) {
-            object.draw(g);
-        }
+//
+//        for (GameObject object : game.getObjects()) {
+//            object.draw(g);
+//        }
 
         g.setColor(Color.white);
         g.setFont(font);
-        // String str = "" + game.score + " : " + game.list.nShips() + " : " + game.state
-        //         + " : " + game.list.isSafe(game.ship) + " : " + game.nLives;
-        // FontMetrics fm = font.
 
-        //String str = game.stats.get(0) + " " + game.stats.get(1) + " " + game.currentTick;
-        SimpleBattle.PlayerStats p1Stats = game.stats;
+        SimpleBattle.PlayerStats p1Stats = game.getStats();
         String strScores    = "Score:    " + p1Stats.getPoints();
         String strMissiles  = "Missiles: " + p1Stats.getMissilesFired();
         String strTicks     = "Ticks:    " + game.getTicks();
-        String p1 = "P1 Green " + game.getP1().getClass().getSimpleName();
+        String p1 = "P1 Green " + game.getPlayer().getClass().getSimpleName();
         g.drawString(strScores, 10, 20);
         g.drawString(strMissiles, 10, 50);
         g.drawString(strTicks, 10, 80);

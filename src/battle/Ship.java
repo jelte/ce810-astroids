@@ -26,34 +26,34 @@ public class Ship extends GameObject {
     // this is the friction that makes the ship slow down over time
     static double loss = 0.99;
 
-    double releaseVelocity = 0;
+    private double releaseVelocity = 0;
     double minVelocity = 2;
     public static double maxRelease = 10;
-    Color color = Color.white;
-    boolean thrusting = false;
+    private Color color = Color.white;
+    private boolean thrusting = false;
 
-    static double gravity = 0.0;
+    private static double gravity = 0.0;
 
     // position and velocity
     public Vector2d d;
 
     // played id (used for drawing)
-    int playerID;
+    private int playerID;
 
 
-    public Ship(Vector2d s, Vector2d v, Vector2d d, int playerID) {
-        super(new Vector2d(s, true), new Vector2d(v, true));
+    public Ship(Vector2d location, Vector2d velocity, Vector2d d, int playerID) {
+        super(new Vector2d(location, true), new Vector2d(velocity, true));
         this.d = new Vector2d(d, true);
         this.playerID = playerID;
     }
 
     public Ship copy() {
-        Ship ship = new Ship(s, v, d, playerID);
+        Ship ship = new Ship(location, velocity, d, playerID);
         ship.releaseVelocity = releaseVelocity;
         return ship;
     }
 
-    public double r() {
+    public double radius() {
         return scale * 2.4;
     }
 
@@ -64,23 +64,23 @@ public class Ship extends GameObject {
 //
 
     public void reset() {
-        s.set(width / 2, height / 2);
-        v.zero();
+        location.set(width / 2, height / 2);
+        velocity.zero();
         d.set(0, -1);
         dead = false;
         // System.out.println("Reset the ship ");
     }
 
-    private static double clamp(double v, double min, double max) {
-        if (v > max) {
+    private static double clamp(double speed, double min, double max) {
+        if (speed > max) {
             return max;
         }
 
-        if (v < min) {
+        if (speed < min) {
             return min;
         }
 
-        return v;
+        return speed;
     }
 
     public Ship update(Action action) {
@@ -91,33 +91,29 @@ public class Ship extends GameObject {
 
         // action.thrust = 1;
 
-        if (action.thrust > 0) {
-            thrusting = true;
-        } else {
-            thrusting = false;
-        }
+        thrusting = action.thrust > 0;
 
         //prevent people from cheating
         double thrustSpeed = clamp(action.thrust, 0, 1);
         double turnAngle = clamp(action.turn, -1, 1);
 
         d.rotate(turnAngle * steerStep);
-        v.add(d, thrustSpeed * t * 0.3 / 2);
-        v.y += gravity;
+        velocity.add(d, thrustSpeed * t * 0.3 / 2);
+        velocity.y += gravity;
         // v.x = 0.5;
-        v.multiply(loss);
+        velocity.multiply(loss);
 
         // This is fairly basic, but it'll do for now...
-        v.x = clamp(v.x, -maxSpeed, maxSpeed);
-        v.y = clamp(v.y, -maxSpeed, maxSpeed);
+        velocity.x = clamp(velocity.x, -maxSpeed, maxSpeed);
+        velocity.y = clamp(velocity.y, -maxSpeed, maxSpeed);
 
-        s.add(v);
+        location.add(velocity);
 
         return this;
     }
 
     public String toString() {
-        return s + "\t " + v;
+        return location + "\t " + velocity;
     }
 
     @Override
@@ -128,7 +124,7 @@ public class Ship extends GameObject {
     public void draw(Graphics2D g) {
         color = playerID == 0 ? Color.green : Color.blue;
         AffineTransform at = g.getTransform();
-        g.translate(s.x, s.y);
+        g.translate(location.x, location.y);
         double rot = Math.atan2(d.y, d.x) + Math.PI / 2;
         g.rotate(rot);
         g.scale(scale, scale);
@@ -148,7 +144,7 @@ public class Ship extends GameObject {
         // sounds.play(sounds.bangLarge);
     }
 
-    public boolean dead() {
+    public boolean isDead() {
         return dead;
     }
 

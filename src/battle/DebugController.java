@@ -9,13 +9,13 @@ import java.awt.geom.AffineTransform;
 public abstract class DebugController implements RenderableBattleController {
 
     @Override
-    public void render(Graphics2D g, Ship s) {
-        AffineTransform at = g.getTransform();
-        g.translate(s.s.x, s.s.y);
-        double rot = Math.atan2(s.d.y, s.d.x) + Math.PI / 2;
-        g.rotate(rot);
-        render(g);
-        g.setTransform(at);
+    public void render(Graphics2D graphics2D, Ship ship) {
+        AffineTransform at = graphics2D.getTransform();
+        graphics2D.translate(ship.location.x, ship.location.y);
+        double rot = Math.atan2(ship.d.y, ship.d.x) + Math.PI / 2;
+        graphics2D.rotate(rot);
+        render(graphics2D);
+        graphics2D.setTransform(at);
     }
 
     public abstract void render(Graphics2D g);

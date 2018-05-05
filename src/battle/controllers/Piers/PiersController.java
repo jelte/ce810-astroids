@@ -20,7 +20,7 @@ import java.util.Random;
  * <p>
  * Features to use for shooting
  * 1. Distance to enemy
- * 2. Deviance from dead straight Left - 0.5 no deviance, 0 full left, 1 full right
+ * 2. Deviance from isDead straight Left - 0.5 no deviance, 0 full left, 1 full right
  * 3. Missiles Remaining
  * <p>
  * Features to use for aligning

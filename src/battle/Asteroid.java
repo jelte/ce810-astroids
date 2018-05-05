@@ -23,11 +23,11 @@ public class Asteroid extends GameObject {
         rotRate = (rand.nextDouble() - 0.5) * Math.PI / 20;
         rot = 0;
         this.size = size;
-        r = radii[size];
+        radius = radii[size];
         setPolygon();
     }
 
-    public boolean dead() {
+    public boolean isDead() {
         return dead;
     }
 
@@ -40,7 +40,7 @@ public class Asteroid extends GameObject {
             // then transform to cartesian
             double theta = (Math.PI * 2 / nPoints)
                     * (i + rand.nextDouble());
-            double rad = r * (1 - radialRange / 2
+            double rad = radius * (1 - radialRange / 2
                     + rand.nextDouble() * radialRange);
             px[i] = (int) (rad * Math.cos(theta));
             py[i] = (int) (rad * Math.sin(theta));
@@ -57,7 +57,7 @@ public class Asteroid extends GameObject {
         } else {
             g.setColor(Color.magenta);
         }
-        g.translate(s.x, s.y);
+        g.translate(location.x, location.y);
         // System.out.println("Drawing at " + s);
         g.rotate(rot);
         // g.fillPolygon(px, py, px.length);
@@ -65,10 +65,10 @@ public class Asteroid extends GameObject {
         g.setStroke(stroke);
 //        g.drawPolygon(px, py, px.length);
         g.drawOval(
-                (int)(-r),
-                (int)(-r),
-                (int)(r * 2),
-                (int)(r * 2)
+                (int)(-radius),
+                (int)(-radius),
+                (int)(radius * 2),
+                (int)(radius * 2)
         );
         // restore original coordinate system
         g.setTransform(at);
@@ -76,17 +76,17 @@ public class Asteroid extends GameObject {
 
     @Override
     public GameObject copy() {
-        Asteroid asteroid = new Asteroid(s, v, size);
+        Asteroid asteroid = new Asteroid(location, velocity, size);
         updateClone(asteroid);
         return asteroid;
     }
 
     public void update() {
-        s.add(v);
+        location.add(velocity);
         rot += rotRate;
     }
     public String toString() {
-        return s.toString();
+        return location.toString();
     }
 
     public void hit() {
