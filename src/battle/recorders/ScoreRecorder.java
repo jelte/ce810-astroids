@@ -18,4 +18,8 @@ public class ScoreRecorder implements DataRecorder {
     public List<Integer> getScores() {
         return scores;
     }
+
+    public int getFinalScore(){
+        return scores.get(scores.size() - 1);
+    }
 }

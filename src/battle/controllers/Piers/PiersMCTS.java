@@ -9,10 +9,15 @@ import battle.SimpleBattle;
  */
 public class PiersMCTS implements BattleController {
 
-    protected static int ACTIONS_PER_MACRO = 15;
+    protected static int ACTIONS_PER_MACRO = 2;
 
     private MacroAction currentBestAction = new MacroAction(new Action(1, 0, false));
     private BetterMCTSNode root;
+
+    public PiersMCTS(int actionsPerMacro){
+        this();
+        ACTIONS_PER_MACRO = actionsPerMacro;
+    }
 
     public PiersMCTS() {
         BetterMCTSNode.setAllActions();
