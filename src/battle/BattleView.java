@@ -27,12 +27,14 @@ public class BattleView extends JComponent {
         g.setFont(font);
 
         SimpleBattle.PlayerStats p1Stats = game.getStats();
-        String strScores = "Score:    " + p1Stats.getPoints();
-        String strMissiles = "Missiles: " + p1Stats.getMissilesFired();
+        if(p1Stats != null) {
+            String strScores = "Score:    " + p1Stats.getPoints();
+            String strMissiles = "Missiles: " + p1Stats.getMissilesFired();
+            g.drawString(strScores, 10, 20);
+            g.drawString(strMissiles, 10, 50);
+        }
         String strTicks = "Ticks:    " + game.getTicks();
         String p1 = "P1 Green " + game.getPlayer().getClass().getSimpleName();
-        g.drawString(strScores, 10, 20);
-        g.drawString(strMissiles, 10, 50);
         g.drawString(strTicks, 10, 80);
         g.drawString(p1, 10, 110);
     }

@@ -47,9 +47,7 @@ public class BetterMCTSNode {
 
     public static void setAllActions() {
         allActions = new Action[6];
-//        notShootActions = new Action[6];
         int i = 0;
-        int j = 0;
         for (double thrust = 1; thrust <= 1; thrust += 1) {
             for (double turn = -1; turn <= 1; turn += 1) {
                 allActions[i++] = new Action(thrust, turn, true);
@@ -135,9 +133,17 @@ public class BetterMCTSNode {
             }
             currentRolloutDepth++;
         }
-        int missilesUsed = 100 - state.getMissilesLeft();
+        return evaluateState(state);
+    }
+
+    private double evaluateState(SimpleBattle state){
+        if(state.isGameOver()){
+             return state.getShip().isDead() ? -10000 : 10000;
+        }
+
+        int missilesUsed = state.getMissilesLeft();
         int ourPoints = state.getPoints();
-        return (ourPoints - (missilesUsed * 5));
+        return (ourPoints + (missilesUsed * 5));
     }
 
     public Action getBestAction() {
