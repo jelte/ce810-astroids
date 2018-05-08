@@ -61,7 +61,7 @@ public class BetterMCTSNode {
         while (current.currentDepth <= maxDepth) {
             if (current.fullyExpanded()) {
                 current = current.selectBestChild();
-                for (int i = 0; i < mcts.ACTIONS_PER_MACRO; i++) {
+                for (int i = 0; i < PiersMCTS.ACTIONS_PER_MACRO; i++) {
                     state.update(current.ourMoveToThisState);
                 }
             } else {
@@ -83,7 +83,7 @@ public class BetterMCTSNode {
             childToExpand = random.nextInt(allActions.length);
         }
         children[childToExpand] = new BetterMCTSNode(this, allActions[childToExpand]);
-        for (int i = 0; i < mcts.ACTIONS_PER_MACRO; i++) {
+        for (int i = 0; i < PiersMCTS.ACTIONS_PER_MACRO; i++) {
             state.update(allActions[childToExpand]);
         }
         numberOfChildrenExpanded++;
