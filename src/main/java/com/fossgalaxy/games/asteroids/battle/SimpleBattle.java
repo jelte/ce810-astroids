@@ -31,6 +31,7 @@ public class SimpleBattle {
     private int nAsteroidChildren = 2;
     private int maxSpeed = 3;
     private int steerRate = 10;
+    private boolean bulletKillShip = false;
     private boolean visible = true;
     private List<GameObject> objects;
     private PlayerStats stats;
@@ -83,6 +84,9 @@ public class SimpleBattle {
         }
         if (params[N_ASTEROID_CHILDREN] != -1) {
             nAsteroidChildren = params[N_ASTEROID_CHILDREN];
+        }
+        if(params[BULLET_KILL_SHIP] != -1){
+            bulletKillShip = params[BULLET_KILL_SHIP] != 0;
         }
     }
 
@@ -220,6 +224,10 @@ public class SimpleBattle {
         if (first == second) return;
         if (first instanceof Asteroid && second instanceof Asteroid) return;
         if (first instanceof BattleMissile && second instanceof BattleMissile) return;
+        if(!bulletKillShip){
+            if(first instanceof BattleMissile && second instanceof Ship) return;
+            if(first instanceof Ship && second instanceof BattleMissile) return;
+        }
         if (overlap(first, second)) {
             if (!(first instanceof Ship || second instanceof Ship)) {
                 stats.nPoints += 10;

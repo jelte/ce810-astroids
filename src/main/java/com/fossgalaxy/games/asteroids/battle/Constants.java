@@ -35,6 +35,7 @@ public interface Constants {
     int SHIP_MAX_SPEED = 5;
     int SHIP_STEER_RATE = 6;
     int N_ASTEROID_CHILDREN = 7;
-    int N_PARAMS = 8;
+    int BULLET_KILL_SHIP = 8;
+    int N_PARAMS = 9;
 
 }
