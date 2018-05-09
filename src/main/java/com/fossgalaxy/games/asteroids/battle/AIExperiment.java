@@ -15,28 +15,24 @@ public class AIExperiment {
 
     public static final int NUM_GAMES_PER_CONTROLLER = 5;
 
-    public static void main(String[] args) {
-        List<Supplier<BattleController>> controllerFunctions = Arrays.asList(
-                PiersMCTS::new,
-                MMMCTS::new,
-                RotateAndShoot::new,
-                Naz_AI::new
-        );
+    private final int numGamesPerController;
+    private final List<Supplier<BattleController>> controllers;
+    private final int[] params;
 
+    public AIExperiment(int numGamesPerController, List<Supplier<BattleController>> controllers, int[] params) {
+        this.numGamesPerController = numGamesPerController;
+        this.controllers = controllers;
+        this.params = params;
+    }
+
+    public Map<String, List<Integer>> run() {
         Map<String, List<Integer>> scores = new HashMap<>();
-
-        // Declare it to the size needed
-        int[] params = new int[N_PARAMS];
-
-        // -1 is ignored so fill it with those values
-        Arrays.fill(params, -1);
-
         SimpleBattle battle = new SimpleBattle(false, params);
 
-        for (Supplier<BattleController> controllerFunction : controllerFunctions) {
+        for (Supplier<BattleController> controllerFunction : controllers) {
             String name = controllerFunction.get().getClass().getSimpleName();
             scores.put(name, new ArrayList<>());
-            for (int i = 0; i < NUM_GAMES_PER_CONTROLLER; i++) {
+            for (int i = 0; i < numGamesPerController; i++) {
                 System.out.println("Playing game: " + name + " : " + i);
                 ScoreRecorder scoreRecorder = new ScoreRecorder();
                 battle.playGame(controllerFunction.get(), scoreRecorder);
@@ -45,9 +41,33 @@ public class AIExperiment {
                 scores.get(name).add(finalScore);
             }
         }
+        return scores;
+    }
+
+    public static void main(String[] args) {
+        List<Supplier<BattleController>> controllerFunctions = Arrays.asList(
+                PiersMCTS::new,
+                MMMCTS::new,
+                RotateAndShoot::new,
+                Naz_AI::new
+        );
+
+        // Declare it to the size needed
+        int[] params = new int[N_PARAMS];
+
+        // -1 is ignored so fill it with those values
+        Arrays.fill(params, -1);
+
+        AIExperiment experiment = new AIExperiment(NUM_GAMES_PER_CONTROLLER, controllerFunctions, params);
+        Map<String, List<Integer>> scores = experiment.run();
 
         for (Map.Entry<String, List<Integer>> entry : scores.entrySet()) {
-            System.out.println(entry.getKey() + " Scored: " + entry.getValue().stream().mapToInt(Integer::new).sum() / NUM_GAMES_PER_CONTROLLER);
+            System.out.println(
+                    entry.getKey() +
+                            " Scored: " +
+                            entry.getValue()
+                                    .stream()
+                                    .mapToInt(Integer::new).sum() / NUM_GAMES_PER_CONTROLLER);
         }
     }
 }
