@@ -27,7 +27,7 @@ import static com.fossgalaxy.games.asteroids.battle.Constants.*;
 
 public class Jenetics {
 
-    static final boolean[] USING = new boolean[N_PARAMS];
+    private static final boolean[] USING = new boolean[N_PARAMS];
 
     static {
         Arrays.fill(USING, false);
@@ -38,7 +38,7 @@ public class Jenetics {
             USING[BULLET_KILL_SHIP] = true;
     };
 
-    static final List<Supplier<BattleController>> controllerFunctions = Arrays.asList(
+    private static final List<Supplier<BattleController>> controllerFunctions = Arrays.asList(
             PiersMCTS::new,
 //            MMMCTS::new,
             RotateAndShoot::new
