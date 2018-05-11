@@ -10,8 +10,8 @@ import java.util.Random;
  */
 public class BetterMCTSNode {
     private static final double EPSILON = 1e-6;
-    private static Action[] allActions;
-    private static Random random = new Random();
+
+    private Random random = new Random();
     private Action ourMoveToThisState;
 
     private BetterMCTSNode parent;
@@ -31,7 +31,7 @@ public class BetterMCTSNode {
         this.explorationConstant = explorationConstant;
         currentDepth = 0;
         ourNode = true;
-        children = new BetterMCTSNode[allActions.length];
+        children = new BetterMCTSNode[mcts.getAllActions().length];
         this.mcts = mcts;
     }
 
@@ -39,22 +39,13 @@ public class BetterMCTSNode {
         this.explorationConstant = parent.explorationConstant;
         this.ourMoveToThisState = ourMoveToThisState;
         this.parent = parent;
-        this.children = new BetterMCTSNode[allActions.length];
+        this.mcts = parent.mcts;
+        this.children = new BetterMCTSNode[mcts.getAllActions().length];
         this.currentDepth = parent.currentDepth + 1;
         this.ourNode = parent.ourNode;
-        this.mcts = parent.mcts;
     }
 
-    public static void setAllActions() {
-        allActions = new Action[6];
-        int i = 0;
-        for (double thrust = 1; thrust <= 1; thrust += 1) {
-            for (double turn = -1; turn <= 1; turn += 1) {
-                allActions[i++] = new Action(thrust, turn, true);
-                allActions[i++] = new Action(thrust, turn, false);
-            }
-        }
-    }
+
 
     public BetterMCTSNode select(SimpleBattle state, int maxDepth) {
         BetterMCTSNode current = this;
@@ -76,15 +67,15 @@ public class BetterMCTSNode {
         // Calculate the possible action spaces
         // can we shoot
 
-        children = new BetterMCTSNode[allActions.length];
+        children = new BetterMCTSNode[mcts.getAllActions().length];
 
-        int childToExpand = random.nextInt(allActions.length);
+        int childToExpand = random.nextInt(mcts.getAllActions().length);
         while (children[childToExpand] != null) {
-            childToExpand = random.nextInt(allActions.length);
+            childToExpand = random.nextInt(mcts.getAllActions().length);
         }
-        children[childToExpand] = new BetterMCTSNode(this, allActions[childToExpand]);
+        children[childToExpand] = new BetterMCTSNode(this, mcts.getAllActions()[childToExpand]);
         for (int i = 0; i < PiersMCTS.ACTIONS_PER_MACRO; i++) {
-            state.update(allActions[childToExpand]);
+            state.update(mcts.getAllActions()[childToExpand]);
         }
         numberOfChildrenExpanded++;
         return children[childToExpand];
@@ -127,7 +118,7 @@ public class BetterMCTSNode {
     public double rollout(SimpleBattle state, int maxDepth) {
         int currentRolloutDepth = this.currentDepth;
         while (maxDepth > currentRolloutDepth && !state.isGameOver()) {
-            Action first = allActions[random.nextInt(allActions.length)];
+            Action first = mcts.getAllActions()[random.nextInt(mcts.getAllActions().length)];
             for (int i = 0; i < PiersMCTS.ACTIONS_PER_MACRO; i++) {
                 state.update(first);
             }
@@ -149,7 +140,7 @@ public class BetterMCTSNode {
     public Action getBestAction() {
         double bestScore = -Double.MAX_VALUE;
         int bestIndex = -1;
-        if (children == null) return allActions[0];
+        if (children == null) return mcts.getAllActions()[0];
 
         for (int i = 0; i < children.length; i++) {
             if (children[i] != null) {
@@ -160,12 +151,12 @@ public class BetterMCTSNode {
                 }
             }
         }
-        if (bestIndex == -1) return allActions[0];
+        if (bestIndex == -1) return mcts.getAllActions()[0];
         return children[bestIndex].ourMoveToThisState;
     }
 
     private boolean fullyExpanded() {
-        return numberOfChildrenExpanded == allActions.length;
+        return numberOfChildrenExpanded == mcts.getAllActions().length;
     }
 
     public void printAllChildren() {

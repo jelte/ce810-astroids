@@ -65,17 +65,18 @@ public class Jenetics {
         Factory<Genotype<IntegerGene>> genotype = Genotype.of(genes);
 
 
-        ExecutorService exec = Executors.newSingleThreadExecutor();
+//        ExecutorService exec = Executors.newSingleThreadExecutor();
+        ExecutorService exec = Executors.newFixedThreadPool(3);
         final Engine<IntegerGene, Double> engine = Engine
                 .builder(Jenetics::fitness, genotype)
-                .populationSize(2)
+                .populationSize(50)
                 .executor(exec)
                 .optimize(Optimize.MAXIMUM)
                 .build();
 
         final Genotype<IntegerGene> result = engine.stream()
                 .limit(limit.byExecutionTime(Duration.ofMinutes(120)))
-                .limit(300)
+//                .limit(300)
                 .peek( x-> {
                     System.out.println("Generation: " + x.getGeneration());
                     System.out.println("Best Fitness: " + x.getBestFitness());

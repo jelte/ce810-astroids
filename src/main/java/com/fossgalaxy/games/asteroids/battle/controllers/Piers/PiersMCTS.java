@@ -10,6 +10,7 @@ import com.fossgalaxy.games.asteroids.battle.SimpleBattle;
 public class PiersMCTS implements BattleController {
 
     protected static int ACTIONS_PER_MACRO = 2;
+    private Action[] allActions;
 
     private MacroAction currentBestAction = new MacroAction(new Action(1, 0, false));
     private BetterMCTSNode root;
@@ -19,8 +20,23 @@ public class PiersMCTS implements BattleController {
         ACTIONS_PER_MACRO = actionsPerMacro;
     }
 
+    public Action[] getAllActions() {
+        return allActions;
+    }
+
     public PiersMCTS() {
-        BetterMCTSNode.setAllActions();
+        setAllActions();
+    }
+
+    public void setAllActions() {
+        allActions = new Action[6];
+        int i = 0;
+        for (double thrust = 1; thrust <= 1; thrust += 1) {
+            for (double turn = -1; turn <= 1; turn += 1) {
+                allActions[i++] = new Action(thrust, turn, true);
+                allActions[i++] = new Action(thrust, turn, false);
+            }
+        }
     }
 
     @Override

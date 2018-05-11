@@ -33,11 +33,11 @@ public class AIExperiment {
             String name = controllerFunction.get().getClass().getSimpleName();
             scores.put(name, new ArrayList<>());
             for (int i = 0; i < numGamesPerController; i++) {
-                System.out.println("Playing game: " + name + " : " + i);
+//                System.out.println("Playing game: " + name + " : " + i);
                 ScoreRecorder scoreRecorder = new ScoreRecorder();
                 battle.playGame(controllerFunction.get(), scoreRecorder);
                 int finalScore = scoreRecorder.getFinalScore();
-                System.out.println("Finished game: " + name + " : " + i + " Scored: " + finalScore);
+//                System.out.println("Finished game: " + name + " : " + i + " Scored: " + finalScore);
                 scores.get(name).add(finalScore);
             }
         }
