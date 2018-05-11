@@ -5,10 +5,15 @@ import com.fossgalaxy.games.asteroids.battle.Action;
 import com.fossgalaxy.games.asteroids.battle.BattleController;
 import com.fossgalaxy.games.asteroids.battle.BattleTest;
 import com.fossgalaxy.games.asteroids.battle.SimpleBattle;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.search.GASearch;
 import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.search.Search;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.strategy.PMutation;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.strategy.TournamentSelection;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.strategy.UniformCrossover;
 import com.fossgalaxy.games.asteroids.utilities.ElapsedCpuTimer;
 
 import java.awt.*;
+import java.util.Random;
 
 /**
  * PTSP-Competition
@@ -17,6 +22,18 @@ import java.awt.*;
  * Date: 17/10/12
  */
 public class BattleEvoController implements BattleController {
+
+    public static BattleController makeMeAGAPlease() {
+
+        Random bob = new Random();
+
+        return new BattleEvoController(new GASearch(
+                new UniformCrossover(bob),
+                new PMutation(bob),
+                new TournamentSelection(bob),
+                bob
+                ));
+    }
 
     /**
      *   Current action in the macro action being execut

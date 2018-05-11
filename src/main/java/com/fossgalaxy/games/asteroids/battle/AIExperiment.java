@@ -4,6 +4,8 @@ import com.fossgalaxy.games.asteroids.battle.controllers.Naz.Naz_AI;
 import com.fossgalaxy.games.asteroids.battle.controllers.Piers.PiersMCTS;
 import com.fossgalaxy.games.asteroids.battle.controllers.RotateAndShoot;
 import com.fossgalaxy.games.asteroids.battle.controllers.mmmcts.MMMCTS;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleOLMCTS.SingleMCTSPlayer;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.BattleEvoController;
 import com.fossgalaxy.games.asteroids.battle.recorders.ScoreRecorder;
 
 import java.util.*;
@@ -49,7 +51,9 @@ public class AIExperiment {
                 PiersMCTS::new,
                 MMMCTS::new,
                 RotateAndShoot::new,
-                Naz_AI::new
+                Naz_AI::new,
+                SingleMCTSPlayer::magicalLambdaOfPlusOneMCTSing,
+                BattleEvoController::makeMeAGAPlease
         );
 
         // Declare it to the size needed

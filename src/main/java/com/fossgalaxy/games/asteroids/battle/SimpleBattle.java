@@ -303,6 +303,14 @@ public class SimpleBattle {
         return stats.nPoints;
     }
 
+    public double getHeuristic() {
+        if (this.isGameOver()) {
+            return -1000;
+        }
+
+        return getPoints();
+    }
+
     public int getMissilesLeft() {
         return nMissiles - stats.nMissiles;
     }

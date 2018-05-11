@@ -1,6 +1,9 @@
 package com.fossgalaxy.games.asteroids.battle;
 
 import com.fossgalaxy.games.asteroids.battle.controllers.mmmcts.MMMCTS;
+import com.fossgalaxy.games.asteroids.battle.controllers.onesteplookahead.OneStepLookAhead;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleOLMCTS.Agent;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleOLMCTS.SingleMCTSPlayer;
 import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.BattleEvoController;
 import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.search.GASearch;
 import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.strategy.PMutation;
@@ -33,18 +36,21 @@ public class BattleTest {
         // Provide value for whatever you want
         params[N_MISSILES] = 200;
         params[N_ASTEROIDS] = 20;
-        params[BULLET_TIME_TO_LIVE] = 1000;
+        params[BULLET_TIME_TO_LIVE] = 50;
+        params[BULLET_KILL_SHIP] = 1;
 
         SimpleBattle battle = new SimpleBattle(true, params);
 
         Random bob = new Random();
 
-        BattleController player = new BattleEvoController(new GASearch(
+        /*BattleController player = new BattleEvoController(new GASearch(
                 new UniformCrossover(bob),
                 new PMutation(bob),
                 new TournamentSelection(bob),
                 bob
-                ));
+                ));*/
+        BattleController player = new SingleMCTSPlayer(bob);
+
         ScoreRecorder scoreRecorder = new ScoreRecorder();
         BulletRecorder bulletRecorder = new BulletRecorder();
 

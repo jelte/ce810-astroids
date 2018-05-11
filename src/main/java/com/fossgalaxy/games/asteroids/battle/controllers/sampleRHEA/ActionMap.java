@@ -17,6 +17,10 @@ public class ActionMap {
             new Action(-1.0,-1.0,false)
     };
 
+    //compatability with diego's code.
+    public static final Action[] ActionMap = actions;
+
+
         public static int mutateThrust(int action)
     {
         if (action==0||action==6) return 3;
