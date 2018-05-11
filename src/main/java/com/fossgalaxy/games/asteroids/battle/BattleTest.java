@@ -1,11 +1,17 @@
 package com.fossgalaxy.games.asteroids.battle;
 
 import com.fossgalaxy.games.asteroids.battle.controllers.mmmcts.MMMCTS;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.BattleEvoController;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.search.GASearch;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.strategy.PMutation;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.strategy.TournamentSelection;
+import com.fossgalaxy.games.asteroids.battle.controllers.sampleRHEA.strategy.UniformCrossover;
 import com.fossgalaxy.games.asteroids.battle.recorders.BulletRecorder;
 import com.fossgalaxy.games.asteroids.battle.recorders.MultiRecorder;
 import com.fossgalaxy.games.asteroids.battle.recorders.ScoreRecorder;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import static com.fossgalaxy.games.asteroids.battle.Constants.*;
 
@@ -13,6 +19,8 @@ import static com.fossgalaxy.games.asteroids.battle.Constants.*;
  * Created by simon lucas on 10/06/15.
  */
 public class BattleTest {
+
+    public static final boolean SHOW_ROLLOUTS = false;
 
     public static void main(String[] args) {
 
@@ -29,7 +37,14 @@ public class BattleTest {
 
         SimpleBattle battle = new SimpleBattle(true, params);
 
-        BattleController player = new MMMCTS();
+        Random bob = new Random();
+
+        BattleController player = new BattleEvoController(new GASearch(
+                new UniformCrossover(bob),
+                new PMutation(bob),
+                new TournamentSelection(bob),
+                bob
+                ));
         ScoreRecorder scoreRecorder = new ScoreRecorder();
         BulletRecorder bulletRecorder = new BulletRecorder();
 
